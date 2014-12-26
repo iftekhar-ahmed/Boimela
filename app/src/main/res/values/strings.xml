@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">বইমেলা</string>
+    <string name="search_hint">অনুসন্ধান</string>
+    <string name="title">বই</string>
+    <string name="author">লেখক</string>
+    <string name="publisher">প্রকাশনী</string>
+    <string name="category">বইয়ের ধরন</string>
+    <string name="new_book">নতুন বই</string>
+    <string name="favorite_books">পছন্দের বইসমূহ</string>
+    <string name="price">মূল্য</string>
+    <string name="book_cover">ছবি</string>
+    <string name="loading">আসছে&#8230;</string>
+    <string name="refresh">আরও বই&#8230;</string>
+    <string name="alarm">দিনক্ষণ</string>
+    <string name="cancel">বাতিল</string>
+    <string name="enter_book_name">বইয়ের নাম</string>
+    <string name="enter_author_name">লেখকের নাম</string>
+    <string name="enter_publisher_name">প্রকাশকের নাম</string>
+    <string name="visiting_date">আপনি কবে বইমেলায় যাচ্ছেন?</string>
+    <string name="going">যাচ্ছি</string>
+    <string name="not_going">যাচ্ছি না</string>
+    <string name="yes">ইচ্ছুক</string>
+    <string name="no">ইচ্ছুক নই</string>
+    <string name="no_record_found">কিছুই পাওয়া যায়নি।  দুঃখিত!</string>
+    <string name="no_new_book">কোন নতুন বই পাওয়া যায়নি</string>
+    <string name="no_internet_connection">আপনার ইন্টারনেট সংযোগ বিচ্ছিন্ন রয়েছে।  দুঃখিত!</string>
+    <string name="notice">লক্ষ্য করুন</string>
+    <string name="gps_alarm_msg">আপনার পছন্দের বইয়ের অবস্থান নির্ণয়ের জন্য জিপিএস চালু করা জরুরী। আপনি কি জিপিএস চালু করতে ইচ্ছুক?</string>
+    <string name="pref_key_search_category">SearchCategory</string>
+    <string name="pref_key_visit_day">Day</string>
+    <string name="pref_key_splash_screen">SplashScreen</string>
+    <string name="tpfc_solaimanlipi">solaimanlipinormal.ttf</string>
+    <string name="roboto_regular">sans-serif</string>
+    <string name="roboto_light">sans-serif-light</string>
+    <string name="roboto_condensed">sans-serif-condensed</string>
+    <string name="roboto_thin">sans-serif-thin</string>
+    <string name="no_fav_book">দুঃখিত! আপনার আশেপাশে কোন বই পাওয়া যায়নি।</string>
+    <string name="time_setting_error">দুঃখিত! আপনার সময় সেট হয়নি। পুনরায় চেষ্টা করুন।</string>
+    <string name="no_gps_connection">আপনার জিপিএস সংযোগ বিচ্ছিন্ন রয়েছে।  দুঃখিত!</string>
+    <string name="no_favbook_added">আপনার কোন পছন্দের বই যোগ করা হয়নি।  দুঃখিত!</string>
+    <string name="no_gps_set">আপনি জি পি এস সেট করেননি। এই সার্ভিস পেতে হলে আপনাকে জি পি এস সেট করতে হবে।</string>
+    <string name="available_books_bylocation">আপনার আশেপাশের বই গুলো।</string>
+    <string name="gps_search">পছন্দের\nবই বার্তা </string>
+    <string name="favorite_books_alarm">পছন্দের বই বার্তা </string>
+    <string name="gps_stop">বার্তা\nচাই না</string>
+    <string name="favorite_book_added">বইটি পছন্দের তালিকায় যুক্ত হয়েছে</string>
+    <string name="taka">৳</string>
+    <string name="splash_headline">অ্যাপটির সুবিধাসমূহ:</string>
+    <string name="splash_text_one">১. লেখক, প্রকাশনী এবং বইয়ের নাম দিয়ে বই অনুসন্ধান করা সম্ভব। মোবাইল অ্যাপটির উপরের অংশে অনুসন্ধানের অপশন রয়েছে।</string>
+    <string name="splash_text_two">২. বইয়ের তথ্যের পাশের তারকা স্পর্শ করে বইটিকে পছন্দের তালিকায় সংযুক্ত করা সম্ভব।</string>
+    <string name="splash_text_three">৩. যেকোনো সময় পছন্দের বইয়ের তালিকাটি দেখে নেওয়া সম্ভব।</string>
+    <string name="splash_text_four">৪. পছন্দের বইটি কেনা হলে তা পছন্দের তালিকা থেকে বিয়োজন করা সম্ভব।</string>
+    <string name="splash_text_five">৫. বইমেলায় পছন্দের বইয়ের নিকটবর্তী হওয়া মাত্র অ্যালার্ম এর মাধ্যমে বইয়ের স্টলের তথ্য পাওয়া সম্ভব। তবে তার জন্য অ্যাপটির "পছন্দের বই বার্তা" অপশনটি চালু রাখতে হবে। </string>
+    <string name="splash_text_six">৬. মোবাইল এর জি পি এস চালু রাখলে এবং জি পি এস স্থিতিশীল হলেই কেবল মাত্র পঞ্চম সুবিধাটি পাওয়া সম্ভব</string>
+    <string name="splash_correct">ঠিক আছে</string>
+    <string name="font_solaimanlipi">solaimanlipinormal.ttf</string>
+
+</resources>

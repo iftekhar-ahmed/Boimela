@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+     <!-- activity_main.xml start -->
+     <dimen name="activity_main_et_blood_group_margin_top">100dp</dimen>
+    <dimen name="activity_main_et_blood_group_margin_left">-40dp</dimen>
+    <dimen name="activity_main_sp_blood_group_width">500dp</dimen>
+    <dimen name="activity_main_sp_blood_group_margin_left">80dp</dimen>
+    <dimen name="activity_main_sp_blood_group_padding_left">40dp</dimen>
+    <dimen name="activity_main_sp_blood_group_margin_top">110dp</dimen>
+    <dimen name="activity_main_btn_search_width">300dp</dimen>
+    <dimen name="activity_main_btn_search_height">60dp</dimen>
+    <dimen name="activity_main_btn_search_margin_top">60dp</dimen>
+    <dimen name="activity_main_btn_search_margin_left">-160dp</dimen>
+    <dimen name="activity_main_btn_search_padding_left">20dp</dimen>
+    <dimen name="activity_main_btn_search_padding_right">100dp</dimen>
+    <dimen name="activity_main_btn_search_text_size">40sp</dimen>
+    <!-- activity_main.xml end -->
+
+    <!--common file dimen start-->
+    <dimen name="text_size_25">50sp</dimen>
+    <dimen name="text_size_20">40sp</dimen>
+    <dimen name="text_size_15">35sp</dimen>
+    <dimen name="text_size_12">24sp</dimen>
+
+    <dimen name="dp_ng_80">-160dp</dimen>
+    <dimen name="dp_ng_75">-150dp</dimen>
+    <dimen name="dp_ng_60">-120dp</dimen>
+    <dimen name="dp_ng_50">-100dp</dimen>
+    <dimen name="dp_ng_30">-60dp</dimen>
+    <dimen name="dp_ng_35">-75dp</dimen>
+    
+    <dimen name="dp_240">480dp</dimen>
+    <dimen name="dp_210">420dp</dimen>
+    <dimen name="dp_200">400dp</dimen>
+    <dimen name="dp_180">360dp</dimen>
+    <dimen name="dp_120">240dp</dimen>
+    <dimen name="dp_110">220dp</dimen>
+    <dimen name="dp_100">200dp</dimen>
+    <dimen name="dp_90">180dp</dimen>
+    <dimen name="dp_80">160dp</dimen>
+    <dimen name="dp_70">140dp</dimen>
+    <dimen name="dp_60">120dp</dimen>
+    <dimen name="dp_50">100dp</dimen>
+    <dimen name="dp_40">80dp</dimen>
+    <dimen name="dp_35">70dp</dimen>
+    <dimen name="dp_30">60dp</dimen>
+    <dimen name="dp_25">50dp</dimen>
+    <dimen name="dp_20">40dp</dimen>
+    <dimen name="dp_18">36dp</dimen>
+    <dimen name="dp_15">30dp</dimen>
+    <dimen name="dp_10">20dp</dimen>
+    <dimen name="dp_5">10dp</dimen>
+    <dimen name="dp_8">16dp</dimen>
+    <dimen name="dp_ng_20">-40dp</dimen>
+    <!--common file dimen end-->
+
+</resources>
