@@ -36,8 +36,8 @@ import org.melayjaire.boimela.adapter.FavoriteCheckListener;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.BookListLoader;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
-import org.melayjaire.boimela.utils.SearchCategoryMap;
+import org.melayjaire.boimela.search.SearchType;
+import org.melayjaire.boimela.search.SearchCategoryMap;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.lang.reflect.Field;

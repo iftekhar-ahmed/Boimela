@@ -1,9 +1,8 @@
-package org.melayjaire.boimela.utils;
+package org.melayjaire.boimela.search;
 
 import android.content.Context;
 
 import org.melayjaire.boimela.R;
-import org.melayjaire.boimela.model.SearchType;
 
 import java.util.HashMap;
 import java.util.Map;

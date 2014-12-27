@@ -11,8 +11,8 @@ import android.preference.PreferenceManager;
 
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
-import org.melayjaire.boimela.utils.SearchCategoryMap;
+import org.melayjaire.boimela.search.SearchType;
+import org.melayjaire.boimela.search.SearchCategoryMap;
 import org.melayjaire.boimela.utils.SearchHelper;
 
 import java.util.HashMap;

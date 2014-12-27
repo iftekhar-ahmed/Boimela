@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.data.BookShelf;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchType;
 
 import android.content.Context;
 import android.database.Cursor;

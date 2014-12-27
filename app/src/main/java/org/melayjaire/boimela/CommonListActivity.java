@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.CommonCursorLoader;
-import org.melayjaire.boimela.model.SearchType;
-import org.melayjaire.boimela.utils.SearchCategoryMap;
+import org.melayjaire.boimela.search.SearchType;
+import org.melayjaire.boimela.search.SearchCategoryMap;
 import org.melayjaire.boimela.utils.Utilities;
 
 public class CommonListActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {

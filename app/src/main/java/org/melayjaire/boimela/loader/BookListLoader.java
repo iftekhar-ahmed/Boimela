@@ -8,7 +8,7 @@ import android.content.Context;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.data.BookShelf;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchType;
 
 public class BookListLoader extends SimpleListLoader {
 

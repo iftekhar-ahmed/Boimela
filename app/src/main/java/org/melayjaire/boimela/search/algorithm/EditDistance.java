@@ -1,4 +1,4 @@
-package org.melayjaire.boimela.utils;
+package org.melayjaire.boimela.search.algorithm;
 
 /** This class is used to find the phonetic matches of book keyword search */
 public class EditDistance {
