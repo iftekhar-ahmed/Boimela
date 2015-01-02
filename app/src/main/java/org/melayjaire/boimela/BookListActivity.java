@@ -13,6 +13,8 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnCloseListener;
 import android.text.TextUtils;
@@ -26,13 +28,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.melayjaire.boimela.adapter.BookListAdapter;
-import org.melayjaire.boimela.adapter.FavoriteCheckListener;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.BookListLoader;
 import org.melayjaire.boimela.model.Book;
@@ -47,13 +47,13 @@ import java.util.List;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.CATEGORY;
 
 public class BookListActivity extends ActionBarActivity implements
-        LoaderCallbacks<List<Book>>, FavoriteCheckListener {
+        LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener {
 
     private Spinner spinnerBookCategory;
     private MenuItem menuItemSearch, menuItemBookCategory,
             menuItemCancelSpinnerView;
     private View bookListLoadProgressView;
-    private ListView bookListView;
+    private RecyclerView mRecyclerView;
     private SearchView searchView;
     private ActionBar actionBar;
 
@@ -118,17 +118,18 @@ public class BookListActivity extends ActionBarActivity implements
         }
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        bookListLoadProgressView = (View) findViewById(R.id.load_status);
-        bookListView = (ListView) findViewById(R.id.listView);
+        bookListLoadProgressView = findViewById(R.id.load_status);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_books);
 
         if (dataSource == null) {
             dataSource = new BookDataSource(this);
             dataSource.open();
         }
 
-        bookListAdapter = new BookListAdapter(this, R.layout.list_item_book,
-                new ArrayList<Book>(), this);
-        bookListView.setAdapter(bookListAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        bookListAdapter = new BookListAdapter(this, new ArrayList<Book>(), this);
+        mRecyclerView.setAdapter(bookListAdapter);
 
         bookCategoryCursorAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_spinner_item,
@@ -322,7 +323,7 @@ public class BookListActivity extends ActionBarActivity implements
 
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle data) {
-        Utilities.showListLoadProgress(this, bookListView,
+        Utilities.showListLoadProgress(this, mRecyclerView,
                 bookListLoadProgressView, true);
         return new BookListLoader(this, dataSource, searchType, queryFilter);
     }
@@ -335,7 +336,7 @@ public class BookListActivity extends ActionBarActivity implements
         } else {
             bookListAdapter.swapList(data);
         }
-        Utilities.showListLoadProgress(this, bookListView,
+        Utilities.showListLoadProgress(this, mRecyclerView,
                 bookListLoadProgressView, false);
         queryFilter = null;
     }
@@ -347,7 +348,6 @@ public class BookListActivity extends ActionBarActivity implements
 
     @Override
     public void onFavoriteCheckedChange(Book book, boolean isFavorite) {
-
         if (book.isFavorite() == isFavorite)
             return;
 

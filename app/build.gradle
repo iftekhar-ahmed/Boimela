@@ -21,6 +21,7 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:21.0.2'
     compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:recyclerview-v7:21.0.2'
     compile files('libs/BanglaLanguageSupport.jar')
     compile files('libs/universal-image-loader-1.8.4.jar')
     compile files('libs/volley.jar')

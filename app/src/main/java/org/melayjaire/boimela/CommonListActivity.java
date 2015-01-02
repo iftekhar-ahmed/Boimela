@@ -6,29 +6,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import org.melayjaire.boimela.adapter.SingleItemRVCursorAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.CommonCursorLoader;
 import org.melayjaire.boimela.model.SearchType;
 import org.melayjaire.boimela.utils.SearchCategoryMap;
 import org.melayjaire.boimela.utils.Utilities;
+import org.melayjaire.boimela.view.RecyclerItemClickListener;
 
 public class CommonListActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {
 
     private View listLoadProgressView;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
     private ActionBar actionBar;
 
-    private SimpleCursorAdapter cursorAdapter;
+    private SingleItemRVCursorAdapter singleItemRVCursorAdapter;
     private BookDataSource dataSource;
     private SearchType searchType;
     private Cursor result;
@@ -41,7 +39,8 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
 
-        listLoadProgressView = (View) findViewById(R.id.load_status);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_books);
+        listLoadProgressView = findViewById(R.id.load_status);
 
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -62,25 +61,19 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
 
         final int columnsArraySize = from.length;
 
-        cursorAdapter = new SimpleCursorAdapter(this,
-                R.layout.list_item_common,
-                null, new String[]{from[columnsArraySize - 1]},
-                new int[]{R.id.tv_list_item_common}, 0) {
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        singleItemRVCursorAdapter = new SingleItemRVCursorAdapter(this, null) {
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                Cursor cursor = getCursor();
-                cursor.moveToPosition(position);
+            public void onBind(ViewHolder viewHolder, Cursor cursor) {
                 String itemText = cursor.getString(cursor.getColumnIndex(from[columnsArraySize - 1]));
-                View v = super.getView(position, convertView, parent);
-                ((TextView) v.findViewById(R.id.tv_list_item_common)).setText(Utilities.getBanglaSpannableString(itemText, CommonListActivity.this));
-                return v;
+                viewHolder.textView.setBanglaText(itemText);
             }
         };
-        getListView().setAdapter(cursorAdapter);
-        getListView().setOnItemClickListener(new OnItemClickListener() {
-
+        mRecyclerView.setAdapter(singleItemRVCursorAdapter);
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parentView, View v, int position, long id) {
+            public void onItemClick(View view, int position) {
                 Intent i = new Intent(CommonListActivity.this, BookListActivity.class);
                 i.putExtra(HomeActivity.EXTRA_TAG_CATEGORY, sCategory);
                 Uri name = Uri.parse(result.getString(result.getColumnIndex(from[1])));
@@ -88,7 +81,7 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
                 i.setAction("android.intent.action.VIEW");
                 startActivity(i);
             }
-        });
+        }));
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -99,27 +92,21 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
         super.onDestroy();
     }
 
-    private ListView getListView() {
-        if (mListView == null)
-            mListView = (ListView) findViewById(R.id.listView);
-        return mListView;
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle data) {
-        Utilities.showListLoadProgress(this, getListView(), listLoadProgressView, true);
+        Utilities.showListLoadProgress(this, mRecyclerView, listLoadProgressView, true);
         return new CommonCursorLoader(this, dataSource, searchType);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         result = data;
-        cursorAdapter.swapCursor(data);
-        Utilities.showListLoadProgress(this, getListView(), listLoadProgressView, false);
+        singleItemRVCursorAdapter.swapCursor(data);
+        Utilities.showListLoadProgress(this, mRecyclerView, listLoadProgressView, false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        cursorAdapter.swapCursor(null);
+        singleItemRVCursorAdapter.swapCursor(null);
     }
 }

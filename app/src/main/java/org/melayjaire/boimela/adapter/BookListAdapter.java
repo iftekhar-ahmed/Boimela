@@ -1,114 +1,89 @@
 package org.melayjaire.boimela.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
 
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.utils.Utilities;
+import org.melayjaire.boimela.view.BanglaTextView;
 
 import java.util.List;
 
-public class BookListAdapter extends ArrayAdapter<Book> implements
+public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> implements
         OnCheckedChangeListener {
 
     private Context context;
-    private FavoriteCheckListener checkChangeCallback;
-    private int layoutResourceId;
-    // private String colors[] = new String[] { "#ead585", "#33B5E5" };
+    private List<Book> books;
+    private FavoriteCheckedListener checkChangeCallback;
 
-    public BookListAdapter(Context context, int layout, List<Book> objects,
-                           FavoriteCheckListener callback) {
-        super(context, layout, objects);
+    public BookListAdapter(Context context, List<Book> books, FavoriteCheckedListener callback) {
         this.context = context;
-        layoutResourceId = layout;
+        this.books = books;
         checkChangeCallback = callback;
     }
 
-    @Override
-    public int getViewTypeCount() {
-
-        if (getCount() != 0)
-            return getCount();
-
-        return 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-
-        return position;
-    }
-
-    private class ViewHolder {
-        TextView title;
-        TextView author;
-        TextView publisher;
-        TextView price;
-        CheckBox favorite;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        Book book = getItem(position);
-
-        View inflatedView = LayoutInflater.from(context).inflate(
-                layoutResourceId, parent, false);
-
-        ViewHolder holder = null;
-
-        if (convertView == null) {
-            convertView = inflatedView;
-
-            holder = new ViewHolder();
-
-            holder.title = (TextView) convertView.findViewById(R.id.title);
-            holder.author = (TextView) convertView.findViewById(R.id.author);
-            holder.publisher = (TextView) convertView
-                    .findViewById(R.id.publisher);
-            holder.price = (TextView) convertView.findViewById(R.id.price);
-            holder.favorite = (CheckBox) convertView
-                    .findViewById(R.id.favorite);
-            holder.favorite.setOnCheckedChangeListener(this);
-
-            holder.price.setTypeface(Utilities.getBanglaFont(context));
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.favorite.setTag(position);
-
-        holder.title.setText(Utilities.getBanglaSpannableString(book.getTitle(), context));
-        holder.author.setText(Utilities.getBanglaSpannableString(book.getAuthor(), context));
-        holder.publisher.setText(Utilities.getBanglaSpannableString(book.getPublisher(), context));
-        holder.price.setText(context.getString(R.string.taka) + " " + book.getPrice());
-        holder.favorite.setChecked(book.isFavorite());
-
-        // int colorPos = position % colors.length;
-        // convertView.setBackgroundColor(Color.parseColor(colors[colorPos]));
-        return convertView;
-    }
-
     public void swapList(List<Book> books) {
-        clear();
-        if (books != null)
-            for (Book book : books)
-                add(book);
+        if (books != null) {
+            this.books.clear();
+            for (Book book : books) {
+                this.books.add(book);
+            }
+        }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        checkChangeCallback.onFavoriteCheckedChange(
-                getItem((Integer) buttonView.getTag()), isChecked);
+        checkChangeCallback.onFavoriteCheckedChange(books.get((Integer) buttonView.getTag()), isChecked);
     }
 
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_book, parent, false);
+        ViewHolder vh = new ViewHolder(v);
+        vh.favorite.setOnCheckedChangeListener(this);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        Book book = books.get(position);
+        viewHolder.title.setBanglaText(book.getTitle());
+        viewHolder.author.setBanglaText(book.getAuthor());
+        viewHolder.publisher.setBanglaText(book.getPublisher());
+        viewHolder.price.setBanglaText(context.getString(R.string.taka) + book.getPrice());
+        viewHolder.favorite.setTag(position);
+        viewHolder.favorite.setChecked(book.isFavorite());
+    }
+
+    @Override
+    public int getItemCount() {
+        return books.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public BanglaTextView title;
+        public BanglaTextView author;
+        public BanglaTextView publisher;
+        public BanglaTextView price;
+        public CheckBox favorite;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            title = (BanglaTextView) itemView.findViewById(R.id.title);
+            author = (BanglaTextView) itemView.findViewById(R.id.author);
+            publisher = (BanglaTextView) itemView.findViewById(R.id.publisher);
+            price = (BanglaTextView) itemView.findViewById(R.id.price);
+            favorite = (CheckBox) itemView.findViewById(R.id.favorite);
+        }
+    }
+
+    public interface FavoriteCheckedListener {
+        void onFavoriteCheckedChange(Book book, boolean isFavorite);
+    }
 }

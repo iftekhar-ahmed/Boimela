@@ -19,7 +19,7 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:manageSpaceActivity="org.melayjaire.boimela.HomeActivity"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+        android:theme="@style/AppBaseTheme" >
         <activity
             android:name="org.melayjaire.boimela.HomeActivity"
             android:configChanges="orientation"

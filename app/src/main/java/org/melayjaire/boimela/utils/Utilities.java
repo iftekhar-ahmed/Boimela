@@ -17,6 +17,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
@@ -86,7 +87,7 @@ public class Utilities {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static void showListLoadProgress(Context context,
-                                            final ListView lView, final View progressView, final boolean show) {
+                                            final RecyclerView rclView, final View progressView, final boolean show) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = context.getResources().getInteger(
                     android.R.integer.config_shortAnimTime);
@@ -102,17 +103,17 @@ public class Utilities {
                         }
                     });
 
-            lView.setVisibility(View.VISIBLE);
-            lView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
+            rclView.setVisibility(View.VISIBLE);
+            rclView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            lView.setVisibility(show ? View.GONE : View.VISIBLE);
+                            rclView.setVisibility(show ? View.GONE : View.VISIBLE);
                         }
                     });
         } else {
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            lView.setVisibility(show ? View.GONE : View.VISIBLE);
+            rclView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
