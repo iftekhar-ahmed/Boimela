@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -21,6 +22,8 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -198,9 +201,7 @@ public class HomeActivity extends ActionBarActivity implements
 
     @Override
     public void onClick(View v) {
-
         Intent i = new Intent(HomeActivity.this, CommonListActivity.class);
-
         switch (v.getId()) {
             case R.id.splash_correct:
                 relativeLayoutSplashScreen.setVisibility(View.GONE);
@@ -229,9 +230,7 @@ public class HomeActivity extends ActionBarActivity implements
                 i.putExtra(EXTRA_TAG_CATEGORY, getString(R.string.favorite_books));
                 startActivity(i);
                 break;
-
             case R.id.btn_locate_favorite_book:
-
                 if (preference.getBoolean(Utilities.GPS_TRACKING, false)) {
                     favoriteBookLocatorButton.setText(Utilities.getBanglaSpannableString(getString(R.string.gps_search), this));
                     Utilities.saveGpsSetting(this, false);
@@ -240,15 +239,33 @@ public class HomeActivity extends ActionBarActivity implements
                     }
                 } else {
                     if (!Utilities.isGpsEnabled(getBaseContext())) {
-                        new GpsSettingScreen(this);
+                        new MaterialDialog.Builder(this)
+                                .title(Utilities.getBanglaSpannableString(getString(R.string.notice), this))
+                                .content(Utilities.getBanglaSpannableString(getString(R.string.gps_alarm_msg), this))
+                                .positiveText(Utilities.getBanglaSpannableString(getString(R.string.yes), this))
+                                .positiveColorRes(R.color.material_blue_grey_800)
+                                .negativeText(Utilities.getBanglaSpannableString(getString(R.string.no), this))
+                                .negativeColorRes(R.color.material_blue_grey_800)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        final Intent gpsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        gpsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivityForResult(gpsIntent, HomeActivity.GPS_REQUEST_CODE);
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        super.onNegative(dialog);
+                                    }
+                                })
+                                .show();
                         return;
                     } else {
                         locationHelper = new LocationHelper(this);
                         favoriteBookLocatorButton.setText(Utilities.getBanglaSpannableString(getString(R.string.gps_stop), this));
                     }
-
                 }
-
                 break;
         }
     }
