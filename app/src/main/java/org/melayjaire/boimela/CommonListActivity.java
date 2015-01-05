@@ -37,7 +37,7 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+        setContentView(R.layout.fragment_books);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_books);
         listLoadProgressView = findViewById(R.id.load_status);
@@ -74,7 +74,7 @@ public class CommonListActivity extends ActionBarActivity implements LoaderCallb
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent i = new Intent(CommonListActivity.this, BookListActivity.class);
+                Intent i = new Intent(CommonListActivity.this, HomeActivity.class);
                 i.putExtra(HomeActivity.EXTRA_TAG_CATEGORY, sCategory);
                 Uri name = Uri.parse(result.getString(result.getColumnIndex(from[1])));
                 i.setData(name);

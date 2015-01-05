@@ -1,147 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/home"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <Button
-            android:id="@+id/btn_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_70"
-            android:layout_marginTop="@dimen/dp_240"
-            android:background="@drawable/submit_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/author"
-            android:textColor="@color/Red"
-            android:textSize="@dimen/text_size_15"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_publisher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/btn_author"
-            android:layout_below="@id/btn_author"
-            android:layout_marginLeft="@dimen/dp_ng_35"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/submit_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/publisher"
-            android:textColor="@color/Red"
-            android:textSize="@dimen/text_size_15"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_catagory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/btn_author"
-            android:layout_below="@id/btn_publisher"
-            android:layout_marginLeft="@dimen/dp_ng_50"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/submit_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/category"
-            android:textColor="@color/Red"
-            android:textSize="@dimen/text_size_15"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_new_book"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/btn_author"
-            android:layout_below="@id/btn_catagory"
-            android:layout_marginLeft="@dimen/dp_ng_35"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/submit_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/new_book"
-            android:textColor="@color/Red"
-            android:textSize="@dimen/text_size_15"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_favorite_books"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/btn_author"
-            android:layout_below="@id/btn_new_book"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/submit_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/favorite_books"
-            android:textColor="@color/Red"
-            android:textSize="@dimen/text_size_15"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_locate_favorite_book"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_120"
-            android:layout_alignTop="@id/btn_catagory"
-            android:layout_marginTop="@dimen/dp_ng_35"
-            android:background="@drawable/gps_button_image_selector"
-            android:onClick="onClick"
-            android:text="@string/gps_search"
-            android:textColor="@color/White"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <ScrollView
-        android:id="@+id/splash_screen"
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_below="@id/toolbar_home"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/black"
-        android:visibility="gone" >
+        android:layout_height="match_parent" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="40dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp" >
-
-            <TextView
-                android:id="@+id/splash_headline"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_one"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_two"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_three"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_four"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_five"
-                style="@style/SplashTextStyle" />
-
-            <TextView
-                android:id="@+id/splash_text_six"
-                style="@style/SplashTextStyle" />
-
-            <Button
-                android:id="@+id/splash_correct"
-                style="@style/SplashTextStyle"
-                android:onClick="onClick"
-                android:text="Ok" />
-        </LinearLayout>
-    </ScrollView>
-
-</merge>
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_locate_books"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        fab:fab_icon="@drawable/ic_gps_fixed"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp" />
+</RelativeLayout>

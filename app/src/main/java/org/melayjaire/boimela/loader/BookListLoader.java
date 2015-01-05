@@ -12,17 +12,17 @@ import org.melayjaire.boimela.model.SearchType;
 
 public class BookListLoader extends SimpleListLoader {
 
-	Context context;
-	BookDataSource dataSource;
-	String filter;
-	SearchType category;
+	private Context context;
+    private BookDataSource dataSource;
+    private String filter;
+    private SearchType category;
 
-	public BookListLoader(Context context, BookDataSource bds,
+	public BookListLoader(Context context, BookDataSource bookDataSource,
 			SearchType searchType, String queryConstraint) {
 		super(context);
 
 		this.context = context;
-		dataSource = bds;
+		dataSource = bookDataSource;
 		filter = queryConstraint;
 		category = searchType;
 		if (category == null)

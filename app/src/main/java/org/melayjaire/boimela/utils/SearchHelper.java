@@ -97,7 +97,6 @@ public class SearchHelper {
 	}
 
 	public Cursor getSuggestions() {
-
 		suggestionsCursor = new MatrixCursor(suggestionColumns);
 
 		String value;
