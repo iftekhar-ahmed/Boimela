@@ -35,14 +35,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="org.melayjaire.boimela.CommonListActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName="org.melayjaire.boimela.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.melayjaire.boimela.HomeActivity" />
-        </activity>
-        <activity
             android:name="org.melayjaire.boimela.NotificationResultActivity"
             android:theme="@android:style/Theme.Dialog"></activity>
 

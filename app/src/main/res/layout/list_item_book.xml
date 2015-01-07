@@ -3,68 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <ImageView
+        android:id="@+id/imageView_book_cover"
+        android:layout_width="@dimen/book_cover_width"
+        android:layout_height="@dimen/book_cover_height"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_alignTop="@+id/title"
+        android:contentDescription="@string/book_cover" />
+
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_toRightOf="@id/imageView_book_cover"
+        app:font="@string/font_solaimanlipi"
+        app:banglaText="@string/title"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/cover"
-            android:layout_width="@dimen/book_cover_width"
-            android:layout_height="@dimen/book_cover_height"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/thumbnail"
-            android:contentDescription="@string/book_cover" />
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_below="@id/title"
+        app:font="@string/font_solaimanlipi"
+        app:banglaText="@string/author"
+        android:textSize="14sp" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/publisher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_below="@id/author"
+        app:font="@string/font_solaimanlipi"
+        app:banglaText="@string/publisher"
+        android:textSize="14sp" />
 
-            <org.melayjaire.boimela.view.BanglaTextView
-                android:id="@+id/title"
-                android:layout_width="@dimen/book_title_width"
-                android:layout_height="wrap_content"
-                app:font="@string/font_solaimanlipi"
-                app:banglaText="@string/title"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <org.melayjaire.boimela.view.BanglaTextView
-                android:id="@+id/author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:font="@string/font_solaimanlipi"
-                app:banglaText="@string/author" />
-
-            <org.melayjaire.boimela.view.BanglaTextView
-                android:id="@+id/publisher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:font="@string/font_solaimanlipi"
-                app:banglaText="@string/publisher" />
-
-            <org.melayjaire.boimela.view.BanglaTextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:font="@string/font_solaimanlipi"
-                app:banglaText="@string/price" />
-        </LinearLayout>
-    </LinearLayout>
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_below="@id/publisher"
+        app:font="@string/font_solaimanlipi"
+        app:banglaText="@string/price"
+        android:paddingBottom="20dp"
+        android:textSize="14sp" />
 
     <CheckBox
-        android:id="@+id/favorite"
+        android:id="@+id/checkBox_favorite"
         style="@style/Widget.CompoundButton.Star.Custom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true" />
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/title" />
 
 </RelativeLayout>

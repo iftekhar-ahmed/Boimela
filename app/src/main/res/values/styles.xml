@@ -11,7 +11,8 @@
     </style>
 
     <style name="Widget.CompoundButton.Star.Custom" parent="@android:style/Widget.CompoundButton.Star">
-        <item name="android:button">@drawable/btn_star</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/btn_star</item>
     </style>
 
     <style name="SplashTextStyle">

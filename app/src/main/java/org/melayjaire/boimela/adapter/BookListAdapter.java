@@ -8,9 +8,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
 
 import java.util.List;
@@ -53,6 +58,9 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Book book = books.get(position);
+        viewHolder.imageViewBookCover.setImageDrawable(TextDrawable.builder()
+                .buildRoundRect(Utilities.getBanglaSpannableString("ক", context).toString()
+                        , ColorGenerator.DEFAULT.getRandomColor(), 40));
         viewHolder.title.setBanglaText(book.getTitle());
         viewHolder.author.setBanglaText(book.getAuthor());
         viewHolder.publisher.setBanglaText(book.getPublisher());
@@ -67,6 +75,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageViewBookCover;
         public BanglaTextView title;
         public BanglaTextView author;
         public BanglaTextView publisher;
@@ -75,11 +84,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
+            imageViewBookCover = (ImageView) itemView.findViewById(R.id.imageView_book_cover);
             title = (BanglaTextView) itemView.findViewById(R.id.title);
             author = (BanglaTextView) itemView.findViewById(R.id.author);
             publisher = (BanglaTextView) itemView.findViewById(R.id.publisher);
             price = (BanglaTextView) itemView.findViewById(R.id.price);
-            favorite = (CheckBox) itemView.findViewById(R.id.favorite);
+            favorite = (CheckBox) itemView.findViewById(R.id.checkBox_favorite);
         }
     }
 

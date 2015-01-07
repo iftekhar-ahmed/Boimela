@@ -1,1 +1,1 @@
-include ':app', ':material dialogs', ':fab'
+include ':app', ':material dialogs', ':fab', ':text drawable'
