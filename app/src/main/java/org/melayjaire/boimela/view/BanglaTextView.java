@@ -66,7 +66,7 @@ public class BanglaTextView extends TextView {
     }
 
     private void setUpTypeFace(Typeface myTypeface) {
-        if (!Utilities.isBanglaAvailable() & Utilities.isBuildAboveHoneyComb()) {
+        if (!Utilities.isBanglaAvailable & Utilities.isBuildAboveHoneyComb) {
             //nothing just add default font
         } else {
             setTypeface(myTypeface);

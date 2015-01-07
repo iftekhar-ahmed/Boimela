@@ -11,7 +11,7 @@
         android:layout_height="@dimen/book_cover_height"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:layout_alignTop="@+id/title"
         android:contentDescription="@string/book_cover" />
 

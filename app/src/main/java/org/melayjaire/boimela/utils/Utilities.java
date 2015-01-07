@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.melayjaire.boimela.NotificationResultActivity;
@@ -41,19 +40,26 @@ public class Utilities {
 
     public static final String MAX_BOOK_INDEX = "max_index";
     public static final String GPS_TRACKING = "gps_tracking";
+    public static final boolean isBuildAboveHoneyComb = Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR2;
+    public static final boolean isBanglaAvailable = isBanglaAvailable();
+
+    private static Typeface typeface;
 
     public static Typeface getBanglaFont(Context context) {
-        return Typeface.createFromAsset(context.getAssets(),
-                "fonts/" + context.getString(R.string.font_solaimanlipi));
+        if (typeface == null) {
+            typeface = Typeface.createFromAsset(context.getAssets(),
+                    "fonts/" + context.getString(R.string.font_solaimanlipi));
+        }
+        return typeface;
     }
 
     public static SpannableString getBanglaSpannableString(String banglaText, Context context) {
         if (banglaText == null) {
             return new SpannableString(new String(""));
         }
-        if (isBuildAboveHoneyComb()) {
+        if (isBuildAboveHoneyComb) {
             SpannableString spannableString = new SpannableString(banglaText);
-            if (isBanglaAvailable()) {
+            if (isBanglaAvailable) {
                 TypefaceSpan span = new TypefaceSpan(getBanglaFont(context));
                 spannableString.setSpan(span, 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -62,11 +68,7 @@ public class Utilities {
         return AndroidCustomFontSupport.getCorrectedBengaliFormat(banglaText, getBanglaFont(context), -1);
     }
 
-    public static boolean isBuildAboveHoneyComb() {
-        return Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR2;
-    }
-
-    public static boolean isBanglaAvailable() {
+    private static boolean isBanglaAvailable() {
         Locale[] locales = Locale.getAvailableLocales();
         for (Locale locale : locales) {
             if (locale.getDisplayName().toLowerCase().contains("bengali")) {
@@ -158,7 +160,6 @@ public class Utilities {
     }
 
     public static void showCustomNotification(Context context, List<Book> books) {
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.drawable.logo).setContentTitle(
                 context.getString(R.string.available_books_bylocation));
