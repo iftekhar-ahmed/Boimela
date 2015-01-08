@@ -58,9 +58,8 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Book book = books.get(position);
-        viewHolder.imageViewBookCover.setImageDrawable(TextDrawable.builder()
-                .buildRoundRect(Utilities.getBanglaSpannableString("ক", context).toString()
-                        , ColorGenerator.DEFAULT.getRandomColor(), 40));
+        viewHolder.imageViewBookCover.setImageDrawable(TextDrawable.builder().beginConfig().withBorder(4).fontSize(40).endConfig()
+                .buildRect(Utilities.getBanglaSpannableString("ছ", context), ColorGenerator.DEFAULT.getRandomColor()));
         viewHolder.title.setBanglaText(book.getTitle());
         viewHolder.author.setBanglaText(book.getAuthor());
         viewHolder.publisher.setBanglaText(book.getPublisher());

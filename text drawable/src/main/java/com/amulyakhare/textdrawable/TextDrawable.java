@@ -1,10 +1,20 @@
 package com.amulyakhare.textdrawable;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 
 /**
  * @author amulya
@@ -12,10 +22,10 @@ import android.graphics.drawable.shapes.RoundRectShape;
  */
 public class TextDrawable extends ShapeDrawable {
 
-    private final Paint textPaint;
+    private final TextPaint textPaint;
     private final Paint borderPaint;
     private static final float SHADE_FACTOR = 0.9f;
-    private final String text;
+    private final CharSequence text;
     private final int color;
     private final RectShape shape;
     private final int height;
@@ -34,12 +44,12 @@ public class TextDrawable extends ShapeDrawable {
         radius = builder.radius;
 
         // text and color
-        text = builder.toUpperCase ? builder.text.toUpperCase() : builder.text;
+        text = builder.toUpperCase ? builder.text.toString().toUpperCase() : builder.text;
         color = builder.color;
 
         // text paint settings
         fontSize = builder.fontSize;
-        textPaint = new Paint();
+        textPaint = new TextPaint();
         textPaint.setColor(builder.textColor);
         textPaint.setAntiAlias(true);
         textPaint.setFakeBoldText(builder.isBold);
@@ -62,9 +72,9 @@ public class TextDrawable extends ShapeDrawable {
     }
 
     private int getDarkerShade(int color) {
-        return Color.rgb((int)(SHADE_FACTOR * Color.red(color)),
-                (int)(SHADE_FACTOR * Color.green(color)),
-                (int)(SHADE_FACTOR * Color.blue(color)));
+        return Color.rgb((int) (SHADE_FACTOR * Color.red(color)),
+                (int) (SHADE_FACTOR * Color.green(color)),
+                (int) (SHADE_FACTOR * Color.blue(color)));
     }
 
     @Override
@@ -86,23 +96,23 @@ public class TextDrawable extends ShapeDrawable {
         int height = this.height < 0 ? r.height() : this.height;
         int fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
         textPaint.setTextSize(fontSize);
-        canvas.drawText(text, width / 2, height / 2 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
-
+        StaticLayout layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        canvas.translate(width / 2, height / 2 + textPaint.descent() + textPaint.ascent());
+        layout.draw(canvas);
+        // canvas.restore();
+        // canvas.drawText(text.toString(), width / 2, height / 2 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
         canvas.restoreToCount(count);
-
     }
 
     private void drawBorder(Canvas canvas) {
         RectF rect = new RectF(getBounds());
-        rect.inset(borderThickness/2, borderThickness/2);
+        rect.inset(borderThickness / 2, borderThickness / 2);
 
         if (shape instanceof OvalShape) {
             canvas.drawOval(rect, borderPaint);
-        }
-        else if (shape instanceof RoundRectShape) {
+        } else if (shape instanceof RoundRectShape) {
             canvas.drawRoundRect(rect, radius, radius, borderPaint);
-        }
-        else {
+        } else {
             canvas.drawRect(rect, borderPaint);
         }
     }
@@ -138,7 +148,7 @@ public class TextDrawable extends ShapeDrawable {
 
     public static class Builder implements IConfigBuilder, IShapeBuilder, IBuilder {
 
-        private String text;
+        private CharSequence text;
 
         private int color;
 
@@ -247,25 +257,25 @@ public class TextDrawable extends ShapeDrawable {
         }
 
         @Override
-        public TextDrawable buildRect(String text, int color) {
+        public TextDrawable buildRect(CharSequence text, int color) {
             rect();
             return build(text, color);
         }
 
         @Override
-        public TextDrawable buildRoundRect(String text, int color, int radius) {
+        public TextDrawable buildRoundRect(CharSequence text, int color, int radius) {
             roundRect(radius);
             return build(text, color);
         }
 
         @Override
-        public TextDrawable buildRound(String text, int color) {
+        public TextDrawable buildRound(CharSequence text, int color) {
             round();
             return build(text, color);
         }
 
         @Override
-        public TextDrawable build(String text, int color) {
+        public TextDrawable build(CharSequence text, int color) {
             this.color = color;
             this.text = text;
             return new TextDrawable(this);
@@ -294,7 +304,7 @@ public class TextDrawable extends ShapeDrawable {
 
     public static interface IBuilder {
 
-        public TextDrawable build(String text, int color);
+        public TextDrawable build(CharSequence text, int color);
     }
 
     public static interface IShapeBuilder {
@@ -307,10 +317,10 @@ public class TextDrawable extends ShapeDrawable {
 
         public IBuilder roundRect(int radius);
 
-        public TextDrawable buildRect(String text, int color);
+        public TextDrawable buildRect(CharSequence text, int color);
 
-        public TextDrawable buildRoundRect(String text, int color, int radius);
+        public TextDrawable buildRoundRect(CharSequence text, int color, int radius);
 
-        public TextDrawable buildRound(String text, int color);
+        public TextDrawable buildRound(CharSequence text, int color);
     }
 }

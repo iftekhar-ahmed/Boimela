@@ -10,14 +10,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.melayjaire.boimela.HomeActivity;
+import org.melayjaire.boimela.OnNewIntentCallback;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.adapter.BookListAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookListFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener, HomeActivity.OnSearchIntentCallback {
+        LoaderManager.LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener, OnNewIntentCallback {
 
     private String queryFilter;
     private View bookListLoadProgressView;
@@ -132,12 +131,8 @@ public class BookListFragment extends Fragment implements
 
     @Override
     public void onFavoriteCheckedChange(Book book, boolean isFavorite) {
-        if (book.isFavorite() == isFavorite)
+        if (book.isFavorite() == isFavorite) {
             return;
-
-        if (isFavorite) {
-            Toast.makeText(getActivity(), Utilities.getBanglaSpannableString(getString(R.string.favorite_book_added), getActivity())
-                    , Toast.LENGTH_SHORT).show();
         }
         book.setFavorite(isFavorite);
         dataSource.update(book);

@@ -17,9 +17,13 @@
 
     <org.melayjaire.boimela.view.BanglaTextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_toStartOf="@+id/checkBox_favorite"
+        android:layout_toLeftOf="@id/checkBox_favorite"
+        android:maxLines="1"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/title"
         android:layout_marginTop="16dp"
@@ -30,7 +34,10 @@
         android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_toStartOf="@+id/checkBox_favorite"
+        android:layout_toLeftOf="@id/checkBox_favorite"
         android:layout_below="@id/title"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/author"
@@ -40,7 +47,10 @@
         android:id="@+id/publisher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_toStartOf="@+id/checkBox_favorite"
+        android:layout_toLeftOf="@id/checkBox_favorite"
         android:layout_below="@id/author"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/publisher"
@@ -50,21 +60,23 @@
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
+        android:layout_toStartOf="@+id/checkBox_favorite"
+        android:layout_toLeftOf="@id/checkBox_favorite"
         android:layout_below="@id/publisher"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/price"
-        android:paddingBottom="20dp"
         android:textSize="14sp" />
 
     <CheckBox
         android:id="@+id/checkBox_favorite"
         style="@style/Widget.CompoundButton.Star.Custom"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/title" />
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

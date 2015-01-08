@@ -47,9 +47,8 @@ public class HomeActivity extends ActionBarActivity implements
     private FloatingActionButton fab;
     private LocationHelper locationHelper;
     private SharedPreferences preference;
-    private OnSearchIntentCallback onSearchIntentCallback;
+    private OnNewIntentCallback onNewIntentCallback;
 
-    public static final String EXTRA_TAG_CATEGORY = "extra_tag_category";
     public static final int GPS_REQUEST_CODE = 1;
 
     @Override
@@ -68,8 +67,8 @@ public class HomeActivity extends ActionBarActivity implements
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         BookListFragment bookListFragment = BookListFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_container, bookListFragment).commit();
-        onSearchIntentCallback = bookListFragment;
-        onSearchIntentCallback.onNewIntent(getIntent());
+        onNewIntentCallback = bookListFragment;
+        onNewIntentCallback.onNewIntent(getIntent());
     }
 
     @Override
@@ -111,7 +110,7 @@ public class HomeActivity extends ActionBarActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
-        onSearchIntentCallback.onNewIntent(intent);
+        onNewIntentCallback.onNewIntent(intent);
     }
 
     private void locateBooks() {
@@ -226,9 +225,5 @@ public class HomeActivity extends ActionBarActivity implements
             case R.id.fab_locate_books:
                 locateBooks();
         }
-    }
-
-    public interface OnSearchIntentCallback {
-        void onNewIntent(Intent intent);
     }
 }

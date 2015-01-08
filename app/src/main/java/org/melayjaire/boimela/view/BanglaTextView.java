@@ -50,7 +50,6 @@ public class BanglaTextView extends TextView {
                 fontName = typedArray.getString(R.styleable.BanglaTextView_font);
                 myTypeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/" + fontName);
                 banglaText = typedArray.getString(R.styleable.BanglaTextView_banglaText);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -60,7 +59,6 @@ public class BanglaTextView extends TextView {
             }
 
             setBanglaSupportedText(banglaText);
-
             typedArray.recycle();
         }
     }
