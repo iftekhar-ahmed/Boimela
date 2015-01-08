@@ -218,9 +218,8 @@ public class Book implements Serializable {
 		setDescription(cursor.getString(cursor.getColumnIndex(DESCRIPTION)));
 		setStallLatitude(cursor.getDouble(cursor.getColumnIndex(STALL_LAT)));
 		setStallLongitude(cursor.getDouble(cursor.getColumnIndex(STALL_LONG)));
-		setFavorite(cursor.getInt(cursor.getColumnIndex(FAVORITE)) == 1 ? true
-				: false);
-		setNew(cursor.getInt(cursor.getColumnIndex(IS_NEW)) == 1 ? true : false);
+		setFavorite(cursor.getInt(cursor.getColumnIndex(FAVORITE)) == 1);
+		setNew(cursor.getInt(cursor.getColumnIndex(IS_NEW)) == 1);
 		return this;
 	}
 }

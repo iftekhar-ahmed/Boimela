@@ -10,10 +10,12 @@
         android:id="@+id/imageView_book_cover"
         android:layout_width="@dimen/book_cover_width"
         android:layout_height="@dimen/book_cover_height"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/title"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="4dp"
-        android:layout_alignTop="@+id/title"
         android:contentDescription="@string/book_cover" />
 
     <org.melayjaire.boimela.view.BanglaTextView
@@ -33,26 +35,28 @@
 
     <org.melayjaire.boimela.view.BanglaTextView
         android:id="@+id/author"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
         android:layout_toStartOf="@+id/price"
         android:layout_toLeftOf="@+id/price"
         android:layout_below="@id/title"
+        android:maxLines="1"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/author"
         android:textSize="14sp" />
 
     <org.melayjaire.boimela.view.BanglaTextView
         android:id="@+id/publisher"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
         android:layout_toStartOf="@+id/price"
         android:layout_toLeftOf="@+id/price"
         android:layout_below="@id/author"
+        android:maxLines="1"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/publisher"
         android:textSize="14sp" />
@@ -64,6 +68,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         app:font="@string/font_solaimanlipi"
@@ -77,6 +82,7 @@
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@id/publisher" />
 
