@@ -1,4 +1,4 @@
- <resources>
+<resources>
 
     <style name="MD_Light" parent="Theme_Light_Dialog">
         <item name="md_divider">@color/md_divider_black</item>
@@ -18,11 +18,8 @@
     <style name="MD_ActionButtonStacked" parent="@style/MD_ActionButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingLeft">@dimen/md_button_padding_horizontal_internalexternal</item>
-        <item name="android:paddingStart">@dimen/md_button_padding_horizontal_internalexternal
-        </item>
         <item name="android:paddingRight">@dimen/md_button_padding_horizontal_internalexternal
         </item>
-        <item name="android:paddingEnd">@dimen/md_button_padding_horizontal_internalexternal</item>
     </style>
 
     <style name="MD_ActionButton">
@@ -33,12 +30,10 @@
     </style>
 
     <style name="MD_ActionButton.Text">
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/md_button_textsize</item>
         <item name="android:singleLine">true</item>
         <item name="android:layout_gravity">end|center_vertical</item>
         <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator">@null</item>
         <item name="android:background">@null</item>
         <item name="android:minWidth">@dimen/md_button_min_width</item>
         <item name="android:paddingLeft">@dimen/md_button_textpadding_horizontal</item>

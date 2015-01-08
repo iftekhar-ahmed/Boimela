@@ -13,4 +13,8 @@
         <item name="md_btn_selector">@drawable/md_btn_selector_ripple_dark</item>
     </style>
 
+    <style name="MD_ActionButton.Text">
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
 </resources>

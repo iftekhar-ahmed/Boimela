@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
 
     <ImageView
         android:id="@+id/imageView_book_cover"
@@ -21,12 +22,12 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
-        android:layout_toStartOf="@+id/checkBox_favorite"
-        android:layout_toLeftOf="@id/checkBox_favorite"
+        android:layout_toStartOf="@+id/price"
+        android:layout_toLeftOf="@+id/price"
+        android:layout_alignTop="@+id/price"
         android:maxLines="1"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/title"
-        android:layout_marginTop="16dp"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -36,8 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
-        android:layout_toStartOf="@+id/checkBox_favorite"
-        android:layout_toLeftOf="@id/checkBox_favorite"
+        android:layout_toStartOf="@+id/price"
+        android:layout_toLeftOf="@+id/price"
         android:layout_below="@id/title"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/author"
@@ -49,8 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/imageView_book_cover"
         android:layout_toRightOf="@id/imageView_book_cover"
-        android:layout_toStartOf="@+id/checkBox_favorite"
-        android:layout_toLeftOf="@id/checkBox_favorite"
+        android:layout_toStartOf="@+id/price"
+        android:layout_toLeftOf="@+id/price"
         android:layout_below="@id/author"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/publisher"
@@ -60,11 +61,11 @@
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/imageView_book_cover"
-        android:layout_toRightOf="@id/imageView_book_cover"
-        android:layout_toStartOf="@+id/checkBox_favorite"
-        android:layout_toLeftOf="@id/checkBox_favorite"
-        android:layout_below="@id/publisher"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/price"
         android:textSize="14sp" />
@@ -77,6 +78,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" />
+        android:layout_alignBottom="@id/publisher" />
 
 </RelativeLayout>
