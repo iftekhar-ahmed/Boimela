@@ -32,24 +32,23 @@ public class LocationHelper implements LocationListener {
         dataSource.open();
 
         if (favoriteBooks == null) {
-            favoriteBooks = new ArrayList<Book>();
+            favoriteBooks = new ArrayList<>();
         }
 
         if (bIdList == null) {
-            bIdList = new ArrayList<Long>();
+            bIdList = new ArrayList<>();
         }
 
         if (oldList == null) {
-            oldList = new ArrayList<Book>();
+            oldList = new ArrayList<>();
         }
 
         initialSetUp();
     }
 
-    @SuppressWarnings("static-access")
     public void initialSetUp() {
         locationManager = (LocationManager) context
-                .getSystemService(context.LOCATION_SERVICE);
+                .getSystemService(Context.LOCATION_SERVICE);
         Location gpsLocation = requestUpdateFromProvider(LocationManager.GPS_PROVIDER);
         Location networkLocation = requestUpdateFromProvider(LocationManager.NETWORK_PROVIDER);
 
@@ -88,15 +87,13 @@ public class LocationHelper implements LocationListener {
     }
 
     private void getFavBooks(Location location, float[] distanceArray) {
-
         favoriteBooks.clear();
         bIdList.clear();
-        List<Book> bList = new ArrayList<Book>();
+        List<Book> bList = new ArrayList<>();
         bList.addAll(dataSource.getFavorites());
 
         for (Book book : bList) {
-
-            if (getDistance(distanceArray, book, location)
+            if (isBookWithinDistance(distanceArray, book, location)
                     && !favoriteBooks.contains(book)) {
 
                 List<Book> favoriteBooksByPublisher = dataSource
@@ -114,38 +111,38 @@ public class LocationHelper implements LocationListener {
         notify(favoriteBooks);
     }
 
-    private void notify(List<Book> incommingBooks) {
-        if (incommingBooks.size() > oldList.size()) {
+    private void notify(List<Book> books) {
+        if (books.size() > oldList.size()) {
             Utilities.vibrateDevice(context);
-            replace(incommingBooks);
-        } else if (oldList.size() > 0 & incommingBooks.size() == 0) {
-            replace(incommingBooks);
-        } else if (incommingBooks.size() <= oldList.size()) {
+            replace(books);
+        } else if (oldList.size() > 0 & books.size() == 0) {
+            replace(books);
+        } else if (books.size() <= oldList.size()) {
 
-            if (incommingBooks.size() == oldList.size()) {
-                if (incommingBooks.containsAll(oldList)) {
+            if (books.size() == oldList.size()) {
+                if (books.containsAll(oldList)) {
 
                 } else {
                     Utilities.vibrateDevice(context);
-                    replace(incommingBooks);
+                    replace(books);
                 }
             } else {
-                if (oldList.containsAll(incommingBooks)) {
+                if (oldList.containsAll(books)) {
 
                 } else {
                     Utilities.vibrateDevice(context);
-                    replace(incommingBooks);
+                    replace(books);
                 }
             }
         }
 
     }
 
-    private void replace(List<Book> incommingBooks) {
+    private void replace(List<Book> books) {
         if (oldList != null)
             oldList.clear();
-        if (incommingBooks != null)
-            oldList.addAll(incommingBooks);
+        if (books != null)
+            oldList.addAll(books);
         Utilities.showCustomNotification(context, oldList);
     }
 
@@ -153,8 +150,8 @@ public class LocationHelper implements LocationListener {
         dataSource.close();
     }
 
-    private boolean getDistance(float[] distanceArray, Book book,
-                                Location location) {
+    private boolean isBookWithinDistance(float[] distanceArray, Book book,
+                                         Location location) {
         Location.distanceBetween(location.getLatitude(),
                 location.getLongitude(), book.getStallLatitude(),
                 book.getStallLongitude(), distanceArray);

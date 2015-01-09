@@ -9,7 +9,7 @@
     </style>
 
     <style name="Theme_SearchView" parent="Widget.AppCompat.SearchView">
-        <item name="android:queryBackground">@color/White</item>
+        <item name="android:queryBackground">?attr/colorPrimary</item>
     </style>
 
 </resources>

@@ -31,11 +31,10 @@ public class BookListLoader extends SimpleListLoader {
 
 	@Override
 	public List<Book> loadInBackground() {
-
-		List<Book> books = null;
-		
-		if (dataSource.isEmpty())
-			dataSource.insert(loadBookShelf().getBooks());
+		List<Book> books;
+		if (dataSource.isEmpty()) {
+            dataSource.insert(loadBookShelf().getBooks());
+        }
 		
 		switch (category) {
 		case NewBook:

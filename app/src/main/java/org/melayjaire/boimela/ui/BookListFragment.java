@@ -1,8 +1,7 @@
 package org.melayjaire.boimela.ui;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.melayjaire.boimela.OnNewIntentCallback;
+import org.melayjaire.boimela.OnBookQueryListener;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.adapter.BookListAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookListFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener, OnNewIntentCallback {
+        LoaderManager.LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener, OnBookQueryListener {
 
     private String queryFilter;
     private View bookListLoadProgressView;
@@ -43,21 +42,6 @@ public class BookListFragment extends Fragment implements
     }
 
     public BookListFragment() {
-    }
-
-    private void handleIntent(Intent intent) {
-        String query = null;
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            query = intent.getStringExtra(SearchManager.QUERY);
-        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            query = intent.getData().toString();
-        }
-
-        if (query != null) {
-            queryFilter = query;
-            Log.d("query", queryFilter);
-            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
-        }
     }
 
     @Override
@@ -142,7 +126,16 @@ public class BookListFragment extends Fragment implements
     }
 
     @Override
-    public void onNewIntent(Intent intent) {
-        handleIntent(intent);
+    public void listBooksWithQuery(String queryText) {
+        if (queryText != null) {
+            queryFilter = queryText;
+            Log.d("query", queryFilter);
+            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        }
+    }
+
+    @Override
+    public Cursor getSuggestionsForQuery(String queryText) {
+        return dataSource.getSearchSuggestions(queryText);
     }
 }

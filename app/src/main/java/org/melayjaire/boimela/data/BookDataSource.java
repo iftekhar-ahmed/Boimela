@@ -61,7 +61,7 @@ public class BookDataSource {
     public BookDataSource(Context context) {
         this.context = context;
         dbHelper = new BookDatabaseHelper(context);
-        categoryColumnMap = new HashMap<SearchType, String[]>();
+        categoryColumnMap = new HashMap<>();
         createMap();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         searchCategoryMap = new SearchCategoryMap(context);

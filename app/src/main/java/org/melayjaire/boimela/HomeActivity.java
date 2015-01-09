@@ -4,12 +4,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -47,7 +49,8 @@ public class HomeActivity extends ActionBarActivity implements
     private FloatingActionButton fab;
     private LocationHelper locationHelper;
     private SharedPreferences preference;
-    private OnNewIntentCallback onNewIntentCallback;
+    private OnBookQueryListener onBookQueryListener;
+    private SimpleCursorAdapter searchSuggestionsAdapter;
 
     public static final int GPS_REQUEST_CODE = 1;
 
@@ -67,8 +70,7 @@ public class HomeActivity extends ActionBarActivity implements
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         BookListFragment bookListFragment = BookListFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_container, bookListFragment).commit();
-        onNewIntentCallback = bookListFragment;
-        onNewIntentCallback.onNewIntent(getIntent());
+        onBookQueryListener = bookListFragment;
     }
 
     @Override
@@ -86,6 +88,49 @@ public class HomeActivity extends ActionBarActivity implements
         searchView.setQueryHint(Utilities.getBanglaSpannableString(getString(R.string.search), this));
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchSuggestionsAdapter = new SimpleCursorAdapter(this, R.layout.list_item_search_suggestion
+                , null, new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1}, new int[]{R.id.textView_title}, 0);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                onBookQueryListener.listBooksWithQuery(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                searchSuggestionsAdapter.changeCursor(onBookQueryListener.getSuggestionsForQuery(s));
+                searchSuggestionsAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+        searchView.setSuggestionsAdapter(searchSuggestionsAdapter);
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int i) {
+                return onSuggestionClick(i);
+            }
+
+            @Override
+            public boolean onSuggestionClick(int i) {
+                Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
+                String book_title = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
+                onBookQueryListener.listBooksWithQuery(book_title);
+                return true;
+            }
+        });
+        /*MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchSuggestionsAdapter.changeCursor(null);
+                return true;
+            }
+        });*/
         return true;
     }
 
@@ -106,11 +151,6 @@ public class HomeActivity extends ActionBarActivity implements
                 break;
         }
         return true;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        onNewIntentCallback.onNewIntent(intent);
     }
 
     private void locateBooks() {
