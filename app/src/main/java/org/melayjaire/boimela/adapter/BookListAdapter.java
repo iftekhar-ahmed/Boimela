@@ -21,16 +21,19 @@ import org.melayjaire.boimela.view.BanglaTextView;
 import java.util.List;
 
 public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHolder> implements
-        OnCheckedChangeListener {
+        OnCheckedChangeListener, View.OnClickListener {
 
     private Context context;
     private List<Book> books;
     private FavoriteCheckedListener checkChangeCallback;
+    private OnItemClickListener itemClickCallback;
 
-    public BookListAdapter(Context context, List<Book> books, FavoriteCheckedListener callback) {
+    public BookListAdapter(Context context, List<Book> books, FavoriteCheckedListener favoriteCheckedListener
+            , OnItemClickListener onItemClickListener) {
         this.context = context;
         this.books = books;
-        checkChangeCallback = callback;
+        checkChangeCallback = favoriteCheckedListener;
+        itemClickCallback = onItemClickListener;
     }
 
     public void swapList(List<Book> books) {
@@ -50,6 +53,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_book, parent, false);
+        v.setOnClickListener(this);
         ViewHolder vh = new ViewHolder(v);
         vh.favorite.setOnCheckedChangeListener(this);
         return vh;
@@ -58,6 +62,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Book book = books.get(position);
+        viewHolder.itemView.setTag(position);
         viewHolder.imageViewBookCover.setImageDrawable(TextDrawable
                 .builder()
                 .beginConfig()
@@ -76,6 +81,12 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     @Override
     public int getItemCount() {
         return books.size();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int position = (int) v.getTag();
+        itemClickCallback.onItemClick(books.get(position));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,5 +110,9 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
     public interface FavoriteCheckedListener {
         void onFavoriteCheckedChange(Book book, boolean isFavorite);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Book book);
     }
 }

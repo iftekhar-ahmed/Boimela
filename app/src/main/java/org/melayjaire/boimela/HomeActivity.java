@@ -15,6 +15,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,22 +116,19 @@ public class HomeActivity extends ActionBarActivity implements
             public boolean onSuggestionClick(int i) {
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
                 String book_title = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
+                Log.i("book", book_title);
                 onBookQueryListener.listBooksWithQuery(book_title);
                 return true;
             }
         });
-        /*MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+            public boolean onClose() {
+                searchSuggestionsAdapter.changeCursor(null);
+                onBookQueryListener.listBooksWithQuery(null);
                 return false;
             }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchSuggestionsAdapter.changeCursor(null);
-                return true;
-            }
-        });*/
+        });
         return true;
     }
 
@@ -168,6 +166,7 @@ public class HomeActivity extends ActionBarActivity implements
                         .positiveColorRes(R.color.material_blue_grey_800)
                         .negativeText(Utilities.getBanglaSpannableString(getString(R.string.no), this))
                         .negativeColorRes(R.color.material_blue_grey_800)
+                        .backgroundColor(getResources().getColor(android.R.color.white))
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
@@ -194,7 +193,8 @@ public class HomeActivity extends ActionBarActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GPS_REQUEST_CODE) {
             if (!Utilities.isGpsEnabled(getBaseContext())) {
-                Toast.makeText(this, Utilities.getBanglaSpannableString(getString(R.string.no_gps_set), this), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, Utilities.getBanglaSpannableString(getString(R.string.no_gps_set), this)
+                        , Toast.LENGTH_LONG).show();
                 Utilities.saveGpsSetting(this, false);
             } else {
                 locationHelper = new LocationHelper(this);

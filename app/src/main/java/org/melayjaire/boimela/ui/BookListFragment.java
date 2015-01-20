@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookListFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<Book>>, BookListAdapter.FavoriteCheckedListener, OnBookQueryListener {
+        LoaderManager.LoaderCallbacks<List<Book>>, OnBookQueryListener
+        , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
 
     private String queryFilter;
     private View bookListLoadProgressView;
@@ -47,7 +47,7 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bookListAdapter = new BookListAdapter(getActivity(), new ArrayList<Book>(), this);
+        bookListAdapter = new BookListAdapter(getActivity(), new ArrayList<Book>(), this, this);
     }
 
     @Override
@@ -126,12 +126,15 @@ public class BookListFragment extends Fragment implements
     }
 
     @Override
+    public void onItemClick(Book book) {
+        BookDetailFragment bookDetailFragment = BookDetailFragment.newInstance(book);
+        bookDetailFragment.show(getFragmentManager(), "Detail");
+    }
+
+    @Override
     public void listBooksWithQuery(String queryText) {
-        if (queryText != null) {
-            queryFilter = queryText;
-            Log.d("query", queryFilter);
-            getActivity().getSupportLoaderManager().restartLoader(0, null, this);
-        }
+        queryFilter = queryText;
+        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
