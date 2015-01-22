@@ -21,6 +21,7 @@ import org.melayjaire.boimela.adapter.BookListAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.BookListLoader;
 import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.model.SearchType;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class BookListFragment extends Fragment implements
         , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
 
     private String queryFilter;
+    private SearchType searchType;
     private View bookListLoadProgressView;
     private RecyclerView mRecyclerView;
     private BookDataSource dataSource;
@@ -94,7 +96,7 @@ public class BookListFragment extends Fragment implements
     public Loader<List<Book>> onCreateLoader(int id, Bundle data) {
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
                 bookListLoadProgressView, true);
-        return new BookListLoader(getActivity(), dataSource, null, queryFilter);
+        return new BookListLoader(getActivity(), dataSource, searchType, queryFilter);
     }
 
     @Override
@@ -132,13 +134,15 @@ public class BookListFragment extends Fragment implements
     }
 
     @Override
-    public void listBooksWithQuery(String queryText) {
+    public void listBooksWithQuery(String queryText, SearchType searchType) {
+        this.searchType = searchType;
         queryFilter = queryText;
         getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
-    public Cursor getSuggestionsForQuery(String queryText) {
-        return dataSource.getSearchSuggestions(queryText);
+    public Cursor getSuggestionsForQuery(String queryText, SearchType searchType) {
+        this.searchType = searchType;
+        return dataSource.getSearchSuggestions(queryText, searchType);
     }
 }

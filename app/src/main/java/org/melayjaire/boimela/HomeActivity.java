@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.model.SearchType;
 import org.melayjaire.boimela.ui.BookListFragment;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
 import org.melayjaire.boimela.utils.LocationHelper;
@@ -47,6 +48,7 @@ public class HomeActivity extends ActionBarActivity implements
     private MenuItem menuItemRefresh;
     private Toolbar toolbar;
     private SearchView searchView;
+    private SearchType searchType = SearchType.Title;
     private FloatingActionButton fab;
     private LocationHelper locationHelper;
     private SharedPreferences preference;
@@ -94,13 +96,13 @@ public class HomeActivity extends ActionBarActivity implements
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                onBookQueryListener.listBooksWithQuery(s);
+                onBookQueryListener.listBooksWithQuery(s, searchType);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchSuggestionsAdapter.changeCursor(onBookQueryListener.getSuggestionsForQuery(s));
+                searchSuggestionsAdapter.changeCursor(onBookQueryListener.getSuggestionsForQuery(s, searchType));
                 searchSuggestionsAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -117,7 +119,7 @@ public class HomeActivity extends ActionBarActivity implements
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
                 String book_title = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
                 Log.i("book", book_title);
-                onBookQueryListener.listBooksWithQuery(book_title);
+                onBookQueryListener.listBooksWithQuery(book_title, searchType);
                 return true;
             }
         });
@@ -125,7 +127,7 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public boolean onClose() {
                 searchSuggestionsAdapter.changeCursor(null);
-                onBookQueryListener.listBooksWithQuery(null);
+                onBookQueryListener.listBooksWithQuery(null, searchType);
                 return false;
             }
         });
@@ -146,6 +148,18 @@ public class HomeActivity extends ActionBarActivity implements
                     Toast.makeText(this, Utilities.getBanglaSpannableString(getString(R.string.no_internet_connection)
                             , this), Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.menu_filter_book:
+                searchType = SearchType.Title;
+                item.setChecked(!item.isChecked());
+                break;
+            case R.id.menu_filter_author:
+                searchType = SearchType.Author;
+                item.setChecked(!item.isChecked());
+                break;
+            case R.id.menu_filter_publisher:
+                searchType = SearchType.Publisher;
+                item.setChecked(!item.isChecked());
                 break;
         }
         return true;
@@ -181,7 +195,6 @@ public class HomeActivity extends ActionBarActivity implements
                             }
                         })
                         .show();
-                return;
             } else {
                 locationHelper = new LocationHelper(this);
             }

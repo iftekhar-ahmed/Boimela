@@ -2,14 +2,11 @@ package org.melayjaire.boimela.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
-import android.preference.PreferenceManager;
 
-import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.SearchType;
 import org.melayjaire.boimela.utils.SearchCategoryMap;
@@ -47,11 +44,23 @@ public class BookDataSource {
     private SQLiteDatabase database;
     private BookDatabaseHelper dbHelper;
     private SearchHelper searchHelper;
-    private Map<SearchType, String[]> categoryColumnMap;
-    private SharedPreferences preferences;
     private SearchCategoryMap searchCategoryMap;
-
     private Context context;
+
+    private static Map<SearchType, String[]> searchTypeToTableColumnMap = new HashMap<>();
+
+    static {
+        searchTypeToTableColumnMap.put(SearchType.Title, new String[]{ID,
+                TITLE_ENGLISH, TITLE});
+        searchTypeToTableColumnMap.put(SearchType.Author, new String[]{ID,
+                AUTHOR_ENGLISH, AUTHOR});
+        searchTypeToTableColumnMap.put(SearchType.Publisher, new String[]{ID,
+                PUBLISHER_ENGLISH, PUBLISHER});
+        searchTypeToTableColumnMap.put(SearchType.Category, new String[]{ID,
+                CATEGORY});
+        searchTypeToTableColumnMap.put(SearchType.NewBook, new String[]{ID,
+                IS_NEW});
+    }
 
     /**
      * Source class for accessing all sorts of book data through convenience
@@ -61,23 +70,7 @@ public class BookDataSource {
     public BookDataSource(Context context) {
         this.context = context;
         dbHelper = new BookDatabaseHelper(context);
-        categoryColumnMap = new HashMap<>();
-        createMap();
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         searchCategoryMap = new SearchCategoryMap(context);
-    }
-
-    private void createMap() {
-        categoryColumnMap.put(SearchType.Title, new String[]{ID,
-                TITLE_ENGLISH, TITLE});
-        categoryColumnMap.put(SearchType.Author, new String[]{ID,
-                AUTHOR_ENGLISH, AUTHOR});
-        categoryColumnMap.put(SearchType.Publisher, new String[]{ID,
-                PUBLISHER_ENGLISH, PUBLISHER});
-        categoryColumnMap.put(SearchType.Category, new String[]{ID,
-                CATEGORY});
-        categoryColumnMap.put(SearchType.NewBook, new String[]{ID,
-                IS_NEW});
     }
 
     public void open() throws SQLiteException {
@@ -132,18 +125,14 @@ public class BookDataSource {
     }
 
     public String[] getCursorColumns(SearchType category) {
-        return categoryColumnMap.get(category);
+        return searchTypeToTableColumnMap.get(category);
     }
 
-    public Cursor getSearchSuggestions(String filter) {
+    public Cursor getSearchSuggestions(String filter, SearchType searchType) {
         if (searchHelper == null)
             searchHelper = new SearchHelper();
-        SearchType category = searchCategoryMap.obtain(preferences
-                .getString(
-                        context.getString(R.string.pref_key_search_category),
-                        context.getString(R.string.title)));
-        searchHelper.prepare(categoryColumnMap.get(category)[1],
-                getInCursor(category), filter);
+        searchHelper.prepare(searchTypeToTableColumnMap.get(searchType)[1],
+                getInCursor(searchType), filter);
         return searchHelper.getSuggestions();
     }
 
@@ -154,8 +143,8 @@ public class BookDataSource {
 
     public Cursor getInCursor(SearchType category) {
         return database.query(true, TABLE_BOOK,
-                categoryColumnMap.get(category), null, null,
-                categoryColumnMap.get(category)[1], null, null, null);
+                searchTypeToTableColumnMap.get(category), null, null,
+                searchTypeToTableColumnMap.get(category)[1], null, null, null);
     }
 
     public Cursor getAllInCursor() {
@@ -166,7 +155,7 @@ public class BookDataSource {
     public List<Book> getInList(SearchType category, String filter) {
         if (searchHelper == null)
             searchHelper = new SearchHelper();
-        searchHelper.prepare(categoryColumnMap.get(category)[1],
+        searchHelper.prepare(searchTypeToTableColumnMap.get(category)[1],
                 getAllInCursor(), filter);
         return searchHelper.findRelatedBooks();
     }

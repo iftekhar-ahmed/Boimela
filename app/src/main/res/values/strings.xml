@@ -4,6 +4,7 @@
     <string name="app_name">বইমেলা</string>
     <string name="font_solaimanlipi">solaimanlipinormal.ttf</string>
     <string name="search_hint">অনুসন্ধান</string>
+    <string name="overflow">কি খুঁজবেন</string>
     <string name="search">খুঁজুন</string>
     <string name="title">বই</string>
     <string name="author">লেখক</string>
@@ -30,7 +31,6 @@
     <string name="no_internet_connection">আপনার ইন্টারনেট সংযোগ বিচ্ছিন্ন রয়েছে।  দুঃখিত!</string>
     <string name="notice">লক্ষ্য করুন</string>
     <string name="gps_alarm_msg">আপনার পছন্দের বইয়ের অবস্থান নির্ণয়ের জন্য জিপিএস চালু করা জরুরী। আপনি কি জিপিএস চালু করতে ইচ্ছুক?</string>
-    <string name="pref_key_search_category">SearchCategory</string>
     <string name="pref_key_visit_day">Day</string>
     <string name="pref_key_splash_screen">SplashScreen</string>
     <string name="no_fav_book">দুঃখিত! আপনার আশেপাশে কোন বই পাওয়া যায়নি।</string>

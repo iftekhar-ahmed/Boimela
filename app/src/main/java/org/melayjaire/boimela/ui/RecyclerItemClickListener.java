@@ -1,4 +1,4 @@
-package org.melayjaire.boimela.view;
+package org.melayjaire.boimela.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
