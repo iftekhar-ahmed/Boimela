@@ -3,6 +3,8 @@ package org.melayjaire.boimela.ui;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -31,12 +33,13 @@ public class BookListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<List<Book>>, OnBookQueryListener
         , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
 
-    private String queryFilter;
-    private SearchType searchType;
     private View bookListLoadProgressView;
     private RecyclerView mRecyclerView;
     private BookDataSource dataSource;
     private BookListAdapter bookListAdapter;
+
+    private final String ARG_QUERY_TEXT = "_query_text";
+    private final String ARG_SEARCH_TYPE = "_search_type";
 
     public static BookListFragment newInstance() {
         BookListFragment fragment = new BookListFragment();
@@ -74,7 +77,10 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        Bundle args = new Bundle();
+        args.putString(ARG_QUERY_TEXT, null);
+        args.putString(ARG_SEARCH_TYPE, SearchType.Title.name());
+        getActivity().getSupportLoaderManager().initLoader(0, args, this);
     }
 
     @Override
@@ -96,21 +102,40 @@ public class BookListFragment extends Fragment implements
     public Loader<List<Book>> onCreateLoader(int id, Bundle data) {
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
                 bookListLoadProgressView, true);
-        return new BookListLoader(getActivity(), dataSource, searchType, queryFilter);
+        String queryText = null;
+        SearchType searchType = null;
+        if (data != null) {
+            queryText = data.getString(ARG_QUERY_TEXT);
+            searchType = SearchType.valueOf(data.getString(ARG_SEARCH_TYPE));
+        }
+        return new BookListLoader(getActivity(), dataSource, searchType, queryText);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> data) {
-        if (data.isEmpty()) {
+    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
+        if (books.isEmpty()) {
             Toast.makeText(getActivity(), Utilities.getBanglaSpannableString(getString(R.string.no_record_found)
                     , getActivity()), Toast.LENGTH_SHORT).
                     show();
         } else {
-            bookListAdapter.swapList(data);
+            if (books.size() == 1) {
+                Message message = new Message();
+                message.obj = books.get(0);
+                Handler handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Book book = (Book) msg.obj;
+                        BookDetailFragment bookDetailFragment = BookDetailFragment.newInstance(book);
+                        bookDetailFragment.show(getFragmentManager(), "Detail");
+                    }
+                };
+                handler.sendMessage(message);
+            } else {
+                bookListAdapter.swapList(books);
+            }
         }
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
                 bookListLoadProgressView, false);
-        queryFilter = null;
     }
 
     @Override
@@ -135,14 +160,17 @@ public class BookListFragment extends Fragment implements
 
     @Override
     public void listBooksWithQuery(String queryText, SearchType searchType) {
-        this.searchType = searchType;
-        queryFilter = queryText;
-        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        Bundle args = null;
+        if (searchType != null) {
+            args = new Bundle();
+            args.putString(ARG_QUERY_TEXT, queryText);
+            args.putString(ARG_SEARCH_TYPE, searchType.name());
+        }
+        getActivity().getSupportLoaderManager().restartLoader(0, args, this);
     }
 
     @Override
     public Cursor getSuggestionsForQuery(String queryText, SearchType searchType) {
-        this.searchType = searchType;
         return dataSource.getSearchSuggestions(queryText, searchType);
     }
 }

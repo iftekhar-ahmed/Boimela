@@ -42,6 +42,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
             for (Book book : books) {
                 this.books.add(book);
             }
+            notifyDataSetChanged();
         }
     }
 

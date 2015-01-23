@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_home"
+    <include layout="@layout/toolbar" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/navigation_drawer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_below="@id/toolbar_home"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <RelativeLayout
+            android:id="@+id/top_level_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_locate_books"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        fab:fab_icon="@drawable/ic_gps_fixed"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp" />
-</RelativeLayout>
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_locate_books"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                fab:fab_icon="@drawable/ic_gps_fixed"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp" />
+        </RelativeLayout>
+
+        <fragment
+            android:id="@+id/fragment_drawer_container"
+            android:name="org.melayjaire.boimela.ui.ActionBarDrawerFragment"
+            tools:layout="@layout/fragment_action_bar_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="?attr/actionBarSize"
+            android:layout_gravity="left|start" />
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

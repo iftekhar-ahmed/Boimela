@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,11 +12,14 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.ui.ActionBarDrawerFragment;
 import org.melayjaire.boimela.ui.BookListFragment;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
 import org.melayjaire.boimela.utils.LocationHelper;
@@ -49,6 +54,8 @@ public class HomeActivity extends ActionBarActivity implements
     private Toolbar toolbar;
     private SearchView searchView;
     private SearchType searchType = SearchType.Title;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     private FloatingActionButton fab;
     private LocationHelper locationHelper;
     private SharedPreferences preference;
@@ -68,12 +75,37 @@ public class HomeActivity extends ActionBarActivity implements
         setSupportActionBar(toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab_locate_books);
         fab.setOnClickListener(this);
+        drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         BookListFragment bookListFragment = BookListFragment.newInstance();
-        fragmentTransaction.add(R.id.fragment_container, bookListFragment).commit();
+        fragmentTransaction.add(R.id.fragment_container, bookListFragment);
+        fragmentTransaction.commit();
         onBookQueryListener = bookListFragment;
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START | Gravity.LEFT)) {
+            drawerLayout.closeDrawers();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -117,9 +149,9 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public boolean onSuggestionClick(int i) {
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
-                String book_title = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
-                Log.i("book", book_title);
-                onBookQueryListener.listBooksWithQuery(book_title, searchType);
+                String suggestion_text = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
+                Log.i("suggestion text", suggestion_text);
+                onBookQueryListener.listBooksWithQuery(suggestion_text, searchType);
                 return true;
             }
         });

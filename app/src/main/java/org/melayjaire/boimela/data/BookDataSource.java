@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteStatement;
 
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.SearchType;
-import org.melayjaire.boimela.utils.SearchCategoryMap;
 import org.melayjaire.boimela.utils.SearchHelper;
 
 import java.util.HashMap;
@@ -44,8 +43,6 @@ public class BookDataSource {
     private SQLiteDatabase database;
     private BookDatabaseHelper dbHelper;
     private SearchHelper searchHelper;
-    private SearchCategoryMap searchCategoryMap;
-    private Context context;
 
     private static Map<SearchType, String[]> searchTypeToTableColumnMap = new HashMap<>();
 
@@ -68,9 +65,7 @@ public class BookDataSource {
      * responsibly after usage
      */
     public BookDataSource(Context context) {
-        this.context = context;
         dbHelper = new BookDatabaseHelper(context);
-        searchCategoryMap = new SearchCategoryMap(context);
     }
 
     public void open() throws SQLiteException {

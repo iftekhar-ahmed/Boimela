@@ -11,16 +11,15 @@
     <string name="publisher">প্রকাশক</string>
     <string name="category">বইয়ের ধরন</string>
     <string name="new_book">নতুন বই</string>
-    <string name="favorite_books">পছন্দের বইসমূহ</string>
+    <string name="favorite_books">পছন্দের বই</string>
     <string name="price">মূল্য</string>
     <string name="book_cover">ছবি</string>
-    <string name="loading">আসছে…</string>
     <string name="refresh">আরও বই…</string>
     <string name="alarm">দিনক্ষণ</string>
     <string name="cancel">বাতিল</string>
-    <string name="enter_book_name">বইয়ের নাম</string>
-    <string name="enter_author_name">লেখকের নাম</string>
-    <string name="enter_publisher_name">প্রকাশকের নাম</string>
+    <string name="enter_book_name">বই…</string>
+    <string name="enter_author_name">লেখক…</string>
+    <string name="enter_publisher_name">প্রকাশক…</string>
     <string name="visiting_date">আপনি কবে বইমেলায় যাচ্ছেন?</string>
     <string name="going">যাচ্ছি</string>
     <string name="not_going">যাচ্ছি না</string>
@@ -52,6 +51,5 @@
     <string name="splash_text_five">৫. বইমেলায় পছন্দের বইয়ের নিকটবর্তী হওয়া মাত্র অ্যালার্ম এর মাধ্যমে বইয়ের স্টলের তথ্য পাওয়া সম্ভব। তবে তার জন্য অ্যাপটির "পছন্দের বই বার্তা" অপশনটি চালু রাখতে হবে। </string>
     <string name="splash_text_six">৬. মোবাইল এর জি পি এস চালু রাখলে এবং জি পি এস স্থিতিশীল হলেই কেবল মাত্র পঞ্চম সুবিধাটি পাওয়া সম্ভব</string>
     <string name="splash_ok">ঠিক আছে</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
