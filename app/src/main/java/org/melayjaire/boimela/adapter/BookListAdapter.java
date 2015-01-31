@@ -2,6 +2,7 @@ package org.melayjaire.boimela.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,8 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
         viewHolder.imageViewBookCover.setImageDrawable(TextDrawable
                 .builder()
                 .beginConfig()
-                .withBorder(4).fontSize(40)
+                .withBorder(4).fontSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 26
+                        , context.getResources().getDisplayMetrics()))
                 .endConfig()
                 .buildRect(Utilities.getBanglaSpannableString(String.valueOf(book.getTitle().charAt(0)), context)
                         , ColorGenerator.DEFAULT.getColor(book.getId())));

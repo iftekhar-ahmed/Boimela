@@ -5,35 +5,51 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
-    android:paddingLeft="16dp"
-    android:paddingStart="16dp"
-    android:paddingRight="16dp"
-    android:paddingEnd="16dp"
     android:paddingTop="8dp"
     tools:context="org.melayjaire.boimela.ui.ActionBarDrawerFragment">
 
     <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/textView_book_type"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:paddingLeft="@dimen/drawer_padding_start"
+        android:paddingRight="@dimen/drawer_padding_end"
+        android:paddingEnd="@dimen/drawer_padding_end"
+        android:background="@drawable/bg_list_item"
+        android:gravity="center|start"
+        android:clickable="true"
         android:textSize="14sp"
         android:textColor="@color/white_87"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/category" />
 
     <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/textView_new_books"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:paddingLeft="@dimen/drawer_padding_start"
+        android:paddingRight="@dimen/drawer_padding_end"
+        android:paddingEnd="@dimen/drawer_padding_end"
+        android:background="@drawable/bg_list_item"
+        android:gravity="center|start"
+        android:clickable="true"
         android:textSize="14sp"
         android:textColor="@color/white_87"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/new_book" />
 
     <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/textView_favorite_books"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:paddingLeft="@dimen/drawer_padding_start"
+        android:paddingRight="@dimen/drawer_padding_end"
+        android:paddingEnd="@dimen/drawer_padding_end"
+        android:background="@drawable/bg_list_item"
+        android:gravity="center|start"
+        android:clickable="true"
         android:textSize="14sp"
         android:textColor="@color/white_87"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/favorite_books" />
-
 </LinearLayout>
