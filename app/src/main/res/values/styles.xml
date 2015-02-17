@@ -6,8 +6,31 @@
         <item name="colorAccent">@color/accent</item>
         <!--<item name="searchViewStyle">@style/Theme_SearchView</item>-->
     </style>
-    
-    <style name="Theme_SearchView" parent="Widget.AppCompat.SearchView">
+
+    <style name="DrawerItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/drawer_item_padding_start</item>
+        <item name="android:paddingRight">@dimen/drawer_item_padding_end</item>
+        <item name="android:paddingTop">@dimen/drawer_item_padding_top</item>
+        <item name="android:paddingBottom">@dimen/drawer_item_padding_bottom</item>
+        <item name="android:background">@drawable/bg_list_item</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="DrawerItem_Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/drawer_item_text_padding_start</item>
+        <item name="android:gravity">center|start</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="DrawerItem_Icon">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="Widget.CompoundButton.Star.Custom" parent="@android:style/Widget.CompoundButton.Star">

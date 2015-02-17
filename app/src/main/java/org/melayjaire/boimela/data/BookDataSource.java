@@ -55,7 +55,7 @@ public class BookDataSource {
                 PUBLISHER_ENGLISH, PUBLISHER});
         searchTypeToTableColumnMap.put(SearchType.Category, new String[]{ID,
                 CATEGORY});
-        searchTypeToTableColumnMap.put(SearchType.NewBook, new String[]{ID,
+        searchTypeToTableColumnMap.put(SearchType.NewBooks, new String[]{ID,
                 IS_NEW});
     }
 

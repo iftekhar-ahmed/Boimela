@@ -8,48 +8,51 @@
     android:paddingTop="8dp"
     tools:context="org.melayjaire.boimela.ui.ActionBarDrawerFragment">
 
-    <org.melayjaire.boimela.view.BanglaTextView
-        android:id="@+id/textView_book_type"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingLeft="@dimen/drawer_padding_start"
-        android:paddingRight="@dimen/drawer_padding_end"
-        android:paddingEnd="@dimen/drawer_padding_end"
-        android:background="@drawable/bg_list_item"
-        android:gravity="center|start"
-        android:clickable="true"
-        android:textSize="14sp"
-        android:textColor="@color/white_87"
-        app:font="@string/font_solaimanlipi"
-        app:banglaText="@string/category" />
+    <LinearLayout
+        android:id="@+id/drawer_item_all_books"
+        style="@style/DrawerItem">
 
-    <org.melayjaire.boimela.view.BanglaTextView
-        android:id="@+id/textView_new_books"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingLeft="@dimen/drawer_padding_start"
-        android:paddingRight="@dimen/drawer_padding_end"
-        android:paddingEnd="@dimen/drawer_padding_end"
-        android:background="@drawable/bg_list_item"
-        android:gravity="center|start"
-        android:clickable="true"
-        android:textSize="14sp"
-        android:textColor="@color/white_87"
-        app:font="@string/font_solaimanlipi"
-        app:banglaText="@string/new_book" />
+        <ImageView
+            style="@style/DrawerItem_Icon"
+            android:src="@drawable/ic_all_books"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/book_cover" />
 
-    <org.melayjaire.boimela.view.BanglaTextView
-        android:id="@+id/textView_favorite_books"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingLeft="@dimen/drawer_padding_start"
-        android:paddingRight="@dimen/drawer_padding_end"
-        android:paddingEnd="@dimen/drawer_padding_end"
-        android:background="@drawable/bg_list_item"
-        android:gravity="center|start"
-        android:clickable="true"
-        android:textSize="14sp"
-        android:textColor="@color/white_87"
-        app:font="@string/font_solaimanlipi"
-        app:banglaText="@string/favorite_books" />
+        <org.melayjaire.boimela.view.BanglaTextView
+            style="@style/DrawerItem_Text"
+            app:font="@string/font_solaimanlipi"
+            app:banglaText="@string/all_books" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawer_item_new_books"
+        style="@style/DrawerItem">
+
+        <ImageView
+            style="@style/DrawerItem_Icon"
+            android:src="@drawable/ic_new_book"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/book_cover" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            style="@style/DrawerItem_Text"
+            app:font="@string/font_solaimanlipi"
+            app:banglaText="@string/new_book" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawer_item_favorite_books"
+        style="@style/DrawerItem">
+
+        <ImageView
+            style="@style/DrawerItem_Icon"
+            android:src="@drawable/ic_star_full"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/book_cover" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            style="@style/DrawerItem_Text"
+            app:font="@string/font_solaimanlipi"
+            app:banglaText="@string/favorite_books" />
+    </LinearLayout>
 </LinearLayout>

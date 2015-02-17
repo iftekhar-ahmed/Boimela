@@ -35,7 +35,7 @@ public class BookListLoader extends SimpleListLoader {
         }
 
         switch (searchType) {
-            case NewBook:
+            case NewBooks:
                 books = dataSource.getNewBooks();
                 break;
             case Favorites:

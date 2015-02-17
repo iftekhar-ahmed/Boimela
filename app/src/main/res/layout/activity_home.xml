@@ -36,10 +36,8 @@
                 android:layout_marginRight="8dp" />
         </RelativeLayout>
 
-        <fragment
+        <FrameLayout
             android:id="@+id/fragment_drawer_container"
-            android:name="org.melayjaire.boimela.ui.ActionBarDrawerFragment"
-            tools:layout="@layout/fragment_action_bar_drawer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start" />

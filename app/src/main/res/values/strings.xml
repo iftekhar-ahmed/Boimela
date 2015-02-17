@@ -12,6 +12,7 @@
     <string name="category">বইয়ের ধরন</string>
     <string name="new_book">নতুন বই</string>
     <string name="favorite_books">পছন্দের বই</string>
+    <string name="all_books">সব বই</string>
     <string name="price">মূল্য</string>
     <string name="book_cover">ছবি</string>
     <string name="refresh">আরও বই…</string>

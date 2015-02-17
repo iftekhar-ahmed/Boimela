@@ -2,7 +2,6 @@ package org.melayjaire.boimela.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,8 +21,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
 import org.melayjaire.boimela.NotificationResultActivity;
@@ -194,23 +191,5 @@ public class Utilities {
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(2, mBuilder.build());
-    }
-
-    public static View getActionBarView(Context context, Window window) {
-        View v = window.getDecorView();
-        int resId = context.getResources().getIdentifier(
-                "action_bar_container", "id", "android");
-        return v.findViewById(resId);
-    }
-
-    @SuppressLint("NewApi")
-    public static void setAlpha(View view, float alpha) {
-        if (Build.VERSION.SDK_INT < 11) {
-            final AlphaAnimation animation = new AlphaAnimation(alpha, alpha);
-            animation.setDuration(0);
-            animation.setFillAfter(true);
-            view.startAnimation(animation);
-        } else
-            view.setAlpha(alpha);
     }
 }

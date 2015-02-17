@@ -22,7 +22,7 @@ public class SearchCategoryMap {
         nameCategoryMap.put(context.getString(R.string.author), SearchType.Author);
         nameCategoryMap.put(context.getString(R.string.publisher), SearchType.Publisher);
         nameCategoryMap.put(context.getString(R.string.category), SearchType.Category);
-        nameCategoryMap.put(context.getString(R.string.new_book), SearchType.NewBook);
+        nameCategoryMap.put(context.getString(R.string.new_book), SearchType.NewBooks);
         nameCategoryMap.put(context.getString(R.string.favorite_books), SearchType.Favorites);
     }
 

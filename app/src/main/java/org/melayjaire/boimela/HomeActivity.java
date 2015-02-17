@@ -47,10 +47,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends ActionBarActivity implements
-        JsonTaskCompleteListener<JSONArray>, View.OnClickListener {
+        JsonTaskCompleteListener<JSONArray>, View.OnClickListener, ActionBarDrawerFragment.OnClickListener {
 
     private View actionBarRefreshProgressView;
-    private MenuItem menuItemRefresh;
+    private MenuItem menuItemRefresh, menuItemSearch;
     private Toolbar toolbar;
     private SearchView searchView;
     private SearchType searchType = SearchType.Title;
@@ -64,14 +64,23 @@ public class HomeActivity extends ActionBarActivity implements
 
     public static final int GPS_REQUEST_CODE = 1;
 
+    private static final String ARG_TITLE = "_arg_title";
+    private static final String ARG_SELECTED_DRAWER_ITEM_ID = "_arg_selected_drawer_item_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         preference = PreferenceManager.getDefaultSharedPreferences(this);
 
+        String title = getString(R.string.all_books);
+
+        if (savedInstanceState != null) {
+            title = savedInstanceState.getCharSequence(ARG_TITLE).toString();
+        }
+
         toolbar = (Toolbar) findViewById(R.id.toolbar_home);
-        toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.app_name), this));
+        toolbar.setTitle(Utilities.getBanglaSpannableString(title, this));
         setSupportActionBar(toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab_locate_books);
         fab.setOnClickListener(this);
@@ -83,6 +92,8 @@ public class HomeActivity extends ActionBarActivity implements
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         BookListFragment bookListFragment = BookListFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_container, bookListFragment);
+        ActionBarDrawerFragment actionBarDrawerFragment = ActionBarDrawerFragment.newInstance();
+        fragmentTransaction.add(R.id.fragment_drawer_container, actionBarDrawerFragment);
         fragmentTransaction.commit();
         onBookQueryListener = bookListFragment;
     }
@@ -100,9 +111,19 @@ public class HomeActivity extends ActionBarActivity implements
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence(ARG_TITLE, toolbar.getTitle());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.START | Gravity.LEFT)) {
             drawerLayout.closeDrawers();
+            return;
+        }
+        if (MenuItemCompat.isActionViewExpanded(menuItemSearch)) {
+            MenuItemCompat.collapseActionView(menuItemSearch);
             return;
         }
         super.onBackPressed();
@@ -118,7 +139,7 @@ public class HomeActivity extends ActionBarActivity implements
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home_activity, menu);
         menuItemRefresh = menu.findItem(R.id.action_refresh);
-        MenuItem menuItemSearch = menu.findItem(R.id.action_search);
+        menuItemSearch = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
         searchView.setQueryHint(Utilities.getBanglaSpannableString(getString(R.string.search), this));
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -161,6 +182,19 @@ public class HomeActivity extends ActionBarActivity implements
                 searchSuggestionsAdapter.changeCursor(null);
                 onBookQueryListener.listBooksWithQuery(null, searchType);
                 return false;
+            }
+        });
+        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                searchView.setIconified(false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchView.setIconified(true);
+                return true;
             }
         });
         return true;
@@ -310,5 +344,25 @@ public class HomeActivity extends ActionBarActivity implements
             case R.id.fab_locate_books:
                 locateBooks();
         }
+    }
+
+    @Override
+    public void onItemClick(View view) {
+        drawerLayout.closeDrawers();
+        switch (view.getId()) {
+            case R.id.drawer_item_all_books:
+                searchType = null;
+                toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
+                break;
+            case R.id.drawer_item_new_books:
+                searchType = SearchType.NewBooks;
+                toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.new_book), this));
+                break;
+            case R.id.drawer_item_favorite_books:
+                searchType = SearchType.Favorites;
+                toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
+                break;
+        }
+        onBookQueryListener.listBooksWithQuery(null, searchType);
     }
 }

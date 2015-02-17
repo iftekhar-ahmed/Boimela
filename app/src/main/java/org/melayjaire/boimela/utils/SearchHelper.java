@@ -120,7 +120,6 @@ public class SearchHelper {
                     break;
                 }
             }
-
         }
         Collections.sort(searchSuggestions, new SearchSuggestionComparator());
         for (int i = 0; i < searchSuggestions.size(); i++) {
