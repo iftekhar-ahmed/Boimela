@@ -65,7 +65,6 @@ public class HomeActivity extends ActionBarActivity implements
     public static final int GPS_REQUEST_CODE = 1;
 
     private static final String ARG_TITLE = "_arg_title";
-    private static final String ARG_SELECTED_DRAWER_ITEM_ID = "_arg_selected_drawer_item_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,19 +181,6 @@ public class HomeActivity extends ActionBarActivity implements
                 searchSuggestionsAdapter.changeCursor(null);
                 onBookQueryListener.listBooksWithQuery(null, searchType);
                 return false;
-            }
-        });
-        MenuItemCompat.setOnActionExpandListener(menuItemSearch, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                searchView.setIconified(false);
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchView.setIconified(true);
-                return true;
             }
         });
         return true;
@@ -351,7 +337,7 @@ public class HomeActivity extends ActionBarActivity implements
         drawerLayout.closeDrawers();
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
-                searchType = null;
+                searchType = SearchType.Title;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
                 break;
             case R.id.drawer_item_new_books:

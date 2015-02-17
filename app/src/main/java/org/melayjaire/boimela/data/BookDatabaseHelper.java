@@ -6,8 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class BookDatabaseHelper extends SQLiteOpenHelper {
+
+    public static final int VERSION = 1;
 	public static final String DB_NAME = "book_db.sqlite";
-	public static final int VERSION = 1;
 	public static final String TABLE_BOOK = "book";
 	public static final String TABLE_FAVORITES = "favorites";
 	public static final String ID = "_id";
@@ -58,5 +59,4 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
 		onCreate(db);
 	}
-
 }

@@ -47,16 +47,18 @@ public class BookDataSource {
     private static Map<SearchType, String[]> searchTypeToTableColumnMap = new HashMap<>();
 
     static {
-        searchTypeToTableColumnMap.put(SearchType.Title, new String[]{ID,
-                TITLE_ENGLISH, TITLE});
-        searchTypeToTableColumnMap.put(SearchType.Author, new String[]{ID,
-                AUTHOR_ENGLISH, AUTHOR});
-        searchTypeToTableColumnMap.put(SearchType.Publisher, new String[]{ID,
-                PUBLISHER_ENGLISH, PUBLISHER});
-        searchTypeToTableColumnMap.put(SearchType.Category, new String[]{ID,
-                CATEGORY});
-        searchTypeToTableColumnMap.put(SearchType.NewBooks, new String[]{ID,
-                IS_NEW});
+        searchTypeToTableColumnMap.put(SearchType.Title, new String[]{ID
+                , TITLE_ENGLISH, TITLE});
+        searchTypeToTableColumnMap.put(SearchType.Author, new String[]{ID
+                , AUTHOR_ENGLISH, AUTHOR});
+        searchTypeToTableColumnMap.put(SearchType.Publisher, new String[]{ID
+                , PUBLISHER_ENGLISH, PUBLISHER});
+        searchTypeToTableColumnMap.put(SearchType.Category, new String[]{ID
+                , CATEGORY});
+        searchTypeToTableColumnMap.put(SearchType.Favorites, new String[]{ID
+                , FAVORITE});
+        searchTypeToTableColumnMap.put(SearchType.NewBooks, new String[]{ID
+                , IS_NEW});
     }
 
     /**
