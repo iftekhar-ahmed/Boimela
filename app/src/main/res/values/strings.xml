@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">বইমেলা</string>
+    <string name="app_name">Boimela</string>
+    <string name="app_name_bangla">বইমেলা</string>
     <string name="font_solaimanlipi">solaimanlipinormal.ttf</string>
     <string name="search_hint">অনুসন্ধান</string>
     <string name="overflow">কি খুঁজবেন</string>

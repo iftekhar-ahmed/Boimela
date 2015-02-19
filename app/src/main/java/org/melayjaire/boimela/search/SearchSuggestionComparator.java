@@ -1,4 +1,4 @@
-package org.melayjaire.boimela.model;
+package org.melayjaire.boimela.search;
 
 import java.util.Comparator;
 

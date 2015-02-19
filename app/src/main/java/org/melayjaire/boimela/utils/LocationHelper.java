@@ -10,6 +10,8 @@ import android.widget.Toast;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,7 @@ public class LocationHelper implements LocationListener {
     }
 
     private void updateUserByLocation(Location bestLocation) {
-        if (dataSource.getFavorites().size() <= 0) {
+        if (dataSource.getAllBooks(SearchCategory.Favorites).size() <= 0) {
             Toast.makeText(context, Utilities.getBanglaSpannableString(context.getString(R.string.no_favbook_added), context), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -90,14 +92,14 @@ public class LocationHelper implements LocationListener {
         favoriteBooks.clear();
         bIdList.clear();
         List<Book> bList = new ArrayList<>();
-        bList.addAll(dataSource.getFavorites());
+        bList.addAll(dataSource.getAllBooks(SearchCategory.Favorites));
 
         for (Book book : bList) {
             if (isBookWithinDistance(distanceArray, book, location)
                     && !favoriteBooks.contains(book)) {
 
-                List<Book> favoriteBooksByPublisher = dataSource
-                        .getFavoritesByPublisher(book.getPublisherInEnglish());
+                List<Book> favoriteBooksByPublisher = dataSource.getAllBooks(SearchCategory.Favorites
+                        , SearchFilter.Publisher.withQuery(book.getPublisherInEnglish(), true));
 
                 for (Book b : favoriteBooksByPublisher) {
                     if (!bIdList.contains(b.getId())) {
@@ -107,7 +109,6 @@ public class LocationHelper implements LocationListener {
                 }
             }
         }
-
         notify(favoriteBooks);
     }
 

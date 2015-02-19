@@ -172,11 +172,8 @@ public class Book implements Parcelable {
         this.isNew = isNew;
     }
 
-    public boolean getIsNew() {
-        return isNew;
-    }
-
-    public ContentValues populate(ContentValues values) {
+    public ContentValues populate() {
+        ContentValues values = new ContentValues();
         values.put(TITLE, getTitle().trim());
         values.put(TITLE_ENGLISH, getTitleInEnglish().trim());
         values.put(AUTHOR, getAuthor().trim());
@@ -191,32 +188,6 @@ public class Book implements Parcelable {
         values.put(FAVORITE, isFavorite() ? "1" : "0");
         values.put(IS_NEW, isNew() ? "1" : "0");
         return values;
-    }
-
-    public ContentValues update(ContentValues values) {
-        values.put(FAVORITE, isFavorite() ? "1" : "0");
-        return values;
-    }
-
-    public ContentValues addToFavorite(ContentValues values) {
-        values.put(ID, getId());
-        values.put(TITLE, getTitle().trim());
-        values.put(PUBLISHER, getPublisher().trim());
-        values.put(PUBLISHER_ENGLISH, getPublisherInEnglish().trim());
-        values.put(STALL_LAT, getStallLatitude());
-        values.put(STALL_LONG, getStallLongitude());
-        return values;
-    }
-
-    public Book fromCursorToFavorite(Cursor cursor) {
-        setId(cursor.getLong(cursor.getColumnIndex(ID)));
-        setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
-        setPublisher(cursor.getString(cursor.getColumnIndex(PUBLISHER)));
-        setPublisherInEnglish(cursor.getString(cursor.getColumnIndex(PUBLISHER_ENGLISH)));
-        setStallLatitude(cursor.getDouble(cursor.getColumnIndex(STALL_LAT)));
-        setStallLongitude(cursor.getDouble(cursor.getColumnIndex(STALL_LONG)));
-        setFavorite(true);
-        return this;
     }
 
     public Book fromCursor(Cursor cursor) {

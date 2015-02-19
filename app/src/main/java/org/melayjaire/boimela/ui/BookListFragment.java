@@ -17,20 +17,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.melayjaire.boimela.OnBookQueryListener;
+import org.melayjaire.boimela.OnBookSearchListener;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.adapter.BookListAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.loader.BookListLoader;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchFilter;
+import org.melayjaire.boimela.search.SearchSuggestionHelper;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookListFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<Book>>, OnBookQueryListener
+        LoaderManager.LoaderCallbacks<List<Book>>, OnBookSearchListener
         , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
 
     private View bookListLoadProgressView;
@@ -38,8 +40,8 @@ public class BookListFragment extends Fragment implements
     private BookDataSource dataSource;
     private BookListAdapter bookListAdapter;
 
-    private final String ARG_QUERY_TEXT = "_query_text";
-    private final String ARG_SEARCH_TYPE = "_search_type";
+    private final String ARG_SEARCH_CATEGORY = "_arg_search_category";
+    private final String ARG_SEARCH_FILTER = "_arg_search_filter";
 
     public static BookListFragment newInstance() {
         BookListFragment fragment = new BookListFragment();
@@ -78,8 +80,8 @@ public class BookListFragment extends Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Bundle args = new Bundle();
-        args.putString(ARG_QUERY_TEXT, null);
-        args.putString(ARG_SEARCH_TYPE, SearchType.Title.name());
+        args.putString(ARG_SEARCH_CATEGORY, null);
+        args.putString(ARG_SEARCH_FILTER, null);
         getActivity().getSupportLoaderManager().initLoader(0, args, this);
     }
 
@@ -102,36 +104,35 @@ public class BookListFragment extends Fragment implements
     public Loader<List<Book>> onCreateLoader(int id, Bundle data) {
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
                 bookListLoadProgressView, true);
-        String queryText = null;
-        SearchType searchType = null;
+        SearchCategory searchCategory = null;
+        SearchFilter searchFilter = null;
         if (data != null) {
-            queryText = data.getString(ARG_QUERY_TEXT);
-            searchType = SearchType.valueOf(data.getString(ARG_SEARCH_TYPE));
+            searchCategory = SearchCategory.valueOf(data.getString(ARG_SEARCH_CATEGORY));
+            searchFilter = SearchFilter.valueOf(data.getString(ARG_SEARCH_FILTER));
         }
-        return new BookListLoader(getActivity(), dataSource, searchType, queryText);
+        return new BookListLoader(getActivity(), dataSource, searchCategory, searchFilter);
     }
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        if (books.isEmpty()) {
-            Toast.makeText(getActivity(), Utilities.getBanglaSpannableString(getString(R.string.no_record_found)
-                    , getActivity()), Toast.LENGTH_SHORT).
-                    show();
+        if (books.size() == 1) {
+            Message message = new Message();
+            message.obj = books.get(0);
+            Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    Book book = (Book) msg.obj;
+                    BookDetailFragment bookDetailFragment = BookDetailFragment.newInstance(book);
+                    bookDetailFragment.show(getFragmentManager(), "Detail");
+                }
+            };
+            handler.sendMessage(message);
         } else {
-            if (books.size() == 1) {
-                Message message = new Message();
-                message.obj = books.get(0);
-                Handler handler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        Book book = (Book) msg.obj;
-                        BookDetailFragment bookDetailFragment = BookDetailFragment.newInstance(book);
-                        bookDetailFragment.show(getFragmentManager(), "Detail");
-                    }
-                };
-                handler.sendMessage(message);
-            } else {
-                bookListAdapter.swapList(books);
+            bookListAdapter.swapList(books);
+            if (books.isEmpty()) {
+                Toast.makeText(getActivity(), Utilities.getBanglaSpannableString(getString(R.string.no_record_found)
+                        , getActivity()), Toast.LENGTH_SHORT).
+                        show();
             }
         }
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
@@ -159,18 +160,19 @@ public class BookListFragment extends Fragment implements
     }
 
     @Override
-    public void listBooksWithQuery(String queryText, SearchType searchType) {
+    public void searchForBooks(SearchCategory searchCategory, SearchFilter searchFilter) {
         Bundle args = null;
-        if (searchType != null) {
+        if (searchCategory != null) {
             args = new Bundle();
-            args.putString(ARG_QUERY_TEXT, queryText);
-            args.putString(ARG_SEARCH_TYPE, searchType.name());
+            args.putString(ARG_SEARCH_CATEGORY, searchCategory.name());
+            args.putString(ARG_SEARCH_FILTER, searchFilter.name());
         }
         getActivity().getSupportLoaderManager().restartLoader(0, args, this);
     }
 
     @Override
-    public Cursor getSuggestionsForQuery(String queryText, SearchType searchType) {
-        return dataSource.getSearchSuggestions(queryText, searchType);
+    public Cursor getSearchSuggestions(SearchCategory searchCategory, SearchFilter searchFilter) {
+        SearchSuggestionHelper searchSuggestionHelper = SearchSuggestionHelper.getInstance();
+        return searchSuggestionHelper.getSuggestions(dataSource.getPlainSuggestions(searchCategory, searchFilter), searchFilter);
     }
 }

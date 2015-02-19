@@ -5,7 +5,8 @@ import android.content.Context;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.data.BookShelf;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,37 +15,32 @@ public class BookListLoader extends SimpleListLoader {
 
     private Context context;
     private BookDataSource dataSource;
-    private String filter;
-    private SearchType searchType;
+    private SearchCategory searchCategory;
+    private SearchFilter searchFilter;
 
-    public BookListLoader(Context context, BookDataSource bookDataSource,
-                          SearchType searchType, String queryConstraint) {
+    public BookListLoader(Context context, BookDataSource dataSource,
+                          SearchCategory searchCategory, SearchFilter searchFilter) {
         super(context);
 
         this.context = context;
-        dataSource = bookDataSource;
-        this.searchType = searchType == null ? SearchType.Title : searchType;
-        filter = queryConstraint;
+        this.dataSource = dataSource;
+        this.searchCategory = searchCategory;
+        this.searchFilter = searchFilter;
     }
 
     @Override
     public List<Book> loadInBackground() {
-        List<Book> books;
         if (dataSource.isEmpty()) {
             dataSource.insert(loadBookShelf().getBooks());
         }
-
-        switch (searchType) {
-            case NewBooks:
-                books = dataSource.getNewBooks();
-                break;
-            case Favorites:
-                books = dataSource.getFavoritesForView();
-                break;
-            default:
-                books = dataSource.getInList(searchType, filter);
+        if (searchCategory == null && searchFilter == null) {
+            return dataSource.getAllBooks();
+        } else if (searchFilter == null) {
+            return dataSource.getAllBooks(searchCategory);
+        } else if (searchCategory == null) {
+            return dataSource.getAllBooks(searchFilter);
         }
-        return books;
+        return dataSource.getAllBooks(searchCategory, searchFilter);
     }
 
     private BookShelf loadBookShelf() {

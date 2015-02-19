@@ -158,7 +158,7 @@ public class Utilities {
 
     public static void showCustomNotification(Context context, List<Book> books) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                context).setSmallIcon(R.drawable.logo).setContentTitle(
+                context).setSmallIcon(R.drawable.ic_launcher).setContentTitle(
                 context.getString(R.string.available_books_bylocation));
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();

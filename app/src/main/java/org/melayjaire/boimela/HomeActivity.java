@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,7 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.ui.ActionBarDrawerFragment;
 import org.melayjaire.boimela.ui.BookListFragment;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
@@ -53,13 +53,14 @@ public class HomeActivity extends ActionBarActivity implements
     private MenuItem menuItemRefresh, menuItemSearch;
     private Toolbar toolbar;
     private SearchView searchView;
-    private SearchType searchType = SearchType.Title;
+    private SearchCategory searchCategory;
+    private SearchFilter searchFilter;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FloatingActionButton fab;
     private LocationHelper locationHelper;
     private SharedPreferences preference;
-    private OnBookQueryListener onBookQueryListener;
+    private OnBookSearchListener onBookSearchListener;
     private SimpleCursorAdapter searchSuggestionsAdapter;
 
     public static final int GPS_REQUEST_CODE = 1;
@@ -84,7 +85,7 @@ public class HomeActivity extends ActionBarActivity implements
         fab = (FloatingActionButton) findViewById(R.id.fab_locate_books);
         fab.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name_bangla, R.string.app_name_bangla);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -94,7 +95,7 @@ public class HomeActivity extends ActionBarActivity implements
         ActionBarDrawerFragment actionBarDrawerFragment = ActionBarDrawerFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_drawer_container, actionBarDrawerFragment);
         fragmentTransaction.commit();
-        onBookQueryListener = bookListFragment;
+        onBookSearchListener = bookListFragment;
     }
 
     @Override
@@ -148,13 +149,14 @@ public class HomeActivity extends ActionBarActivity implements
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                onBookQueryListener.listBooksWithQuery(s, searchType);
+                onBookSearchListener.searchForBooks(searchCategory, searchFilter.withQuery(s, false));
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchSuggestionsAdapter.changeCursor(onBookQueryListener.getSuggestionsForQuery(s, searchType));
+                searchSuggestionsAdapter.changeCursor(onBookSearchListener.getSearchSuggestions(searchCategory
+                        , searchFilter.withQuery(s, false)));
                 searchSuggestionsAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -170,8 +172,7 @@ public class HomeActivity extends ActionBarActivity implements
             public boolean onSuggestionClick(int i) {
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
                 String suggestion_text = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
-                Log.i("suggestion text", suggestion_text);
-                onBookQueryListener.listBooksWithQuery(suggestion_text, searchType);
+                onBookSearchListener.searchForBooks(searchCategory, searchFilter.withQuery(suggestion_text, false));
                 return true;
             }
         });
@@ -179,7 +180,7 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public boolean onClose() {
                 searchSuggestionsAdapter.changeCursor(null);
-                onBookQueryListener.listBooksWithQuery(null, searchType);
+                onBookSearchListener.searchForBooks(searchCategory, null);
                 return false;
             }
         });
@@ -202,15 +203,15 @@ public class HomeActivity extends ActionBarActivity implements
                 }
                 break;
             case R.id.menu_filter_book:
-                searchType = SearchType.Title;
+                searchFilter = SearchFilter.Title;
                 item.setChecked(!item.isChecked());
                 break;
             case R.id.menu_filter_author:
-                searchType = SearchType.Author;
+                searchFilter = SearchFilter.Author;
                 item.setChecked(!item.isChecked());
                 break;
             case R.id.menu_filter_publisher:
-                searchType = SearchType.Publisher;
+                searchFilter = SearchFilter.Publisher;
                 item.setChecked(!item.isChecked());
                 break;
         }
@@ -337,18 +338,18 @@ public class HomeActivity extends ActionBarActivity implements
         drawerLayout.closeDrawers();
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
-                searchType = SearchType.Title;
+                searchCategory = null;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
                 break;
             case R.id.drawer_item_new_books:
-                searchType = SearchType.NewBooks;
+                searchCategory = SearchCategory.NewBooks;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.new_book), this));
                 break;
             case R.id.drawer_item_favorite_books:
-                searchType = SearchType.Favorites;
+                searchCategory = SearchCategory.Favorites;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
                 break;
         }
-        onBookQueryListener.listBooksWithQuery(null, searchType);
+        onBookSearchListener.searchForBooks(searchCategory, searchFilter);
     }
 }

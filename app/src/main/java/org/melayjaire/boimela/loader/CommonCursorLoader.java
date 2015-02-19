@@ -5,7 +5,7 @@ import android.database.Cursor;
 
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.data.BookShelf;
-import org.melayjaire.boimela.model.SearchType;
+import org.melayjaire.boimela.search.SearchType;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public class CommonCursorLoader extends SimpleCursorLoader {
         if (dataSource.isEmpty())
             dataSource.insert(loadBookShelf().getBooks());
 
-        return dataSource.getInCursor(category);
+        return dataSource.getPlainSuggestions(category);
     }
 
     private BookShelf loadBookShelf() {
