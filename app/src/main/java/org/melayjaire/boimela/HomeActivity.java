@@ -33,15 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.ui.ActionBarDrawerFragment;
 import org.melayjaire.boimela.ui.BookListFragment;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
 import org.melayjaire.boimela.utils.LocationHelper;
-import org.melayjaire.boimela.utils.NetworkHelper;
 import org.melayjaire.boimela.utils.Utilities;
-import org.melayjaire.boimela.utils.VolleyHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,7 @@ public class HomeActivity extends ActionBarActivity implements
     private MenuItem menuItemRefresh, menuItemSearch;
     private Toolbar toolbar;
     private SearchView searchView;
-    private SearchCategory searchCategory;
+    private SearchCriteria searchCriteria;
     private SearchFilter searchFilter;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -88,11 +86,11 @@ public class HomeActivity extends ActionBarActivity implements
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name_bangla, R.string.app_name_bangla);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        searchCategory = null;
-        searchFilter = SearchFilter.Title.withQuery("", false);
+        searchCriteria = null;
+        searchFilter = SearchFilter.Title.withQuery("", false, false);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        BookListFragment bookListFragment = BookListFragment.newInstance(searchCategory, searchFilter);
+        BookListFragment bookListFragment = BookListFragment.newInstance(searchCriteria, searchFilter);
         fragmentTransaction.add(R.id.fragment_container, bookListFragment);
         ActionBarDrawerFragment actionBarDrawerFragment = ActionBarDrawerFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_drawer_container, actionBarDrawerFragment);
@@ -140,7 +138,10 @@ public class HomeActivity extends ActionBarActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home_activity, menu);
-        menuItemRefresh = menu.findItem(R.id.action_refresh);
+        menu.findItem(R.id.menu_filter_title).setTitle(Utilities.getBanglaSpannableString(getString(R.string.title), this));
+        menu.findItem(R.id.menu_filter_author).setTitle(Utilities.getBanglaSpannableString(getString(R.string.author), this));
+        menu.findItem(R.id.menu_filter_publisher).setTitle(Utilities.getBanglaSpannableString(getString(R.string.publisher), this));
+        // menuItemRefresh = menu.findItem(R.id.action_refresh);
         menuItemSearch = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(menuItemSearch);
         searchView.setQueryHint(Utilities.getBanglaSpannableString(getString(R.string.search), this));
@@ -151,14 +152,14 @@ public class HomeActivity extends ActionBarActivity implements
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                onBookSearchListener.searchForBooks(searchCategory, searchFilter.withQuery(s, false));
+                onBookSearchListener.searchForBooks(searchCriteria, searchFilter.withQuery(s, false, true));
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                searchSuggestionsAdapter.changeCursor(onBookSearchListener.getSearchSuggestions(searchCategory
-                        , searchFilter.withQuery(s, false)));
+                searchSuggestionsAdapter.changeCursor(onBookSearchListener.getSearchSuggestions(searchCriteria
+                        , searchFilter.withQuery(s, false, false)));
                 searchSuggestionsAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -174,7 +175,7 @@ public class HomeActivity extends ActionBarActivity implements
             public boolean onSuggestionClick(int i) {
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
                 String suggestion_text = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
-                onBookSearchListener.searchForBooks(searchCategory, searchFilter.withQuery(suggestion_text, false));
+                onBookSearchListener.searchForBooks(searchCriteria, searchFilter.withQuery(suggestion_text, false, true));
                 return true;
             }
         });
@@ -182,7 +183,7 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public boolean onClose() {
                 searchSuggestionsAdapter.changeCursor(null);
-                onBookSearchListener.searchForBooks(searchCategory, null);
+                onBookSearchListener.searchForBooks(searchCriteria, searchFilter.withQuery("", false, false));
                 return false;
             }
         });
@@ -192,7 +193,7 @@ public class HomeActivity extends ActionBarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_refresh:
+            /*case R.id.action_refresh:
                 if (NetworkHelper.isNetworkAvailable(this)) {
                     VolleyHelper volleyHelper = VolleyHelper
                             .getInstance(this, this);
@@ -203,8 +204,8 @@ public class HomeActivity extends ActionBarActivity implements
                     Toast.makeText(this, Utilities.getBanglaSpannableString(getString(R.string.no_internet_connection)
                             , this), Toast.LENGTH_SHORT).show();
                 }
-                break;
-            case R.id.menu_filter_book:
+                break;*/
+            case R.id.menu_filter_title:
                 searchFilter = SearchFilter.Title;
                 item.setChecked(!item.isChecked());
                 break;
@@ -340,18 +341,18 @@ public class HomeActivity extends ActionBarActivity implements
         drawerLayout.closeDrawers();
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
-                searchCategory = null;
+                searchCriteria = null;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
                 break;
             case R.id.drawer_item_new_books:
-                searchCategory = SearchCategory.NewBooks;
+                searchCriteria = SearchCriteria.NewBooks;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.new_book), this));
                 break;
             case R.id.drawer_item_favorite_books:
-                searchCategory = SearchCategory.Favorites;
+                searchCriteria = SearchCriteria.Favorites;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
                 break;
         }
-        onBookSearchListener.searchForBooks(searchCategory, searchFilter);
+        onBookSearchListener.searchForBooks(searchCriteria, searchFilter);
     }
 }

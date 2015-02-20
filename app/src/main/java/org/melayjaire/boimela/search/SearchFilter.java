@@ -12,52 +12,30 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
 /**
  * Created by Iftekhar on 2/19/2015.
  */
-public enum SearchFilter implements SearchConfig {
+public enum SearchFilter {
 
-    Title() {
-        @Override
-        public String getKeySearchColumn() {
-            return TITLE_ENGLISH;
-        }
+    Title(TITLE_ENGLISH, new String[]{ID, TITLE_ENGLISH, TITLE}),
 
-        @Override
-        public String[] getSearchSuggestionColumns() {
-            return new String[]{ID, TITLE_ENGLISH, TITLE};
-        }
-    },
-    Author() {
-        @Override
-        public String getKeySearchColumn() {
-            return AUTHOR_ENGLISH;
-        }
+    Author(AUTHOR_ENGLISH, new String[]{ID, AUTHOR_ENGLISH, AUTHOR}),
 
-        @Override
-        public String[] getSearchSuggestionColumns() {
-            return new String[]{ID, AUTHOR_ENGLISH, AUTHOR};
-        }
-    },
-    Publisher() {
-        @Override
-        public String getKeySearchColumn() {
-            return PUBLISHER_ENGLISH;
-        }
+    Publisher(PUBLISHER_ENGLISH, new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER}),
 
-        @Override
-        public String[] getSearchSuggestionColumns() {
-            return new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER};
-        }
-    },
-    BookCategory() {
-        @Override
-        public String getKeySearchColumn() {
-            return CATEGORY;
-        }
+    BookCategory(CATEGORY, new String[]{ID, CATEGORY});
 
-        @Override
-        public String[] getSearchSuggestionColumns() {
-            return new String[]{ID, CATEGORY};
-        }
-    };
+    SearchFilter(String keySearchColumn, String[] searchSuggestionColumns) {
+        this.keySearchColumn = keySearchColumn;
+        this.searchSuggestionColumns = searchSuggestionColumns;
+    }
+
+    private String queryText = "";
+
+    private boolean fullyQualify = false;
+
+    private boolean order = true;
+
+    private final String keySearchColumn;
+
+    private final String[] searchSuggestionColumns;
 
     public String getQueryText() {
         return queryText;
@@ -67,13 +45,35 @@ public enum SearchFilter implements SearchConfig {
         return fullyQualify;
     }
 
-    public SearchFilter withQuery(String queryText, boolean fullyQualify) {
-        this.queryText = queryText;
-        this.fullyQualify = fullyQualify;
-        return this;
+    public String getKeySearchColumn() {
+        return keySearchColumn;
     }
 
-    private String queryText = "";
+    public String getDefaultOrderingColumn() {
+        return TITLE;
+    }
 
-    private boolean fullyQualify = false;
+    public String[] getSearchSuggestionColumns() {
+        return searchSuggestionColumns;
+    }
+
+    public boolean order() {
+        return order;
+    }
+
+    /**
+     * provide additional query requirements and result ordering
+     *
+     * @param queryText    the text literal to search for
+     * @param fullyQualify if true, requires result items to fully match queryText for this filter.
+     *                     default is false.
+     * @param order        whether or not to order result items
+     * @return the configured SearchFilter
+     */
+    public SearchFilter withQuery(String queryText, boolean fullyQualify, boolean order) {
+        this.queryText = queryText;
+        this.fullyQualify = fullyQualify;
+        this.order = order;
+        return this;
+    }
 }

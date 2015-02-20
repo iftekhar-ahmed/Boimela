@@ -5,7 +5,7 @@ import android.content.Context;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.data.BookShelf;
 import org.melayjaire.boimela.model.Book;
-import org.melayjaire.boimela.search.SearchCategory;
+import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 
 import java.io.IOException;
@@ -15,16 +15,16 @@ public class BookListLoader extends SimpleListLoader {
 
     private Context context;
     private BookDataSource dataSource;
-    private SearchCategory searchCategory;
+    private SearchCriteria searchCriteria;
     private SearchFilter searchFilter;
 
     public BookListLoader(Context context, BookDataSource dataSource,
-                          SearchCategory searchCategory, SearchFilter searchFilter) {
+                          SearchCriteria searchCriteria, SearchFilter searchFilter) {
         super(context);
 
         this.context = context;
         this.dataSource = dataSource;
-        this.searchCategory = searchCategory;
+        this.searchCriteria = searchCriteria;
         this.searchFilter = searchFilter;
     }
 
@@ -33,7 +33,7 @@ public class BookListLoader extends SimpleListLoader {
         if (dataSource.isEmpty()) {
             dataSource.insert(loadBookShelf().getBooks());
         }
-        return dataSource.getAllBooks(searchCategory, searchFilter);
+        return dataSource.getAllBooks(searchCriteria, searchFilter);
     }
 
     private BookShelf loadBookShelf() {
