@@ -28,6 +28,7 @@ import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.search.SearchSuggestionHelper;
 import org.melayjaire.boimela.utils.Utilities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +41,15 @@ public class BookListFragment extends Fragment implements
     private BookDataSource dataSource;
     private BookListAdapter bookListAdapter;
 
-    private final String ARG_SEARCH_CATEGORY = "_arg_search_category";
-    private final String ARG_SEARCH_FILTER = "_arg_search_filter";
+    private static final String ARG_SEARCH_CATEGORY = "_arg_search_category";
+    private static final String ARG_SEARCH_FILTER = "_arg_search_filter";
 
-    public static BookListFragment newInstance() {
+    public static BookListFragment newInstance(SearchCategory searchCategory, SearchFilter searchFilter) {
         BookListFragment fragment = new BookListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_SEARCH_CATEGORY, searchCategory);
+        args.putSerializable(ARG_SEARCH_FILTER, searchFilter);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -79,9 +84,7 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle args = new Bundle();
-        args.putString(ARG_SEARCH_CATEGORY, null);
-        args.putString(ARG_SEARCH_FILTER, null);
+        Bundle args = getArguments();
         getActivity().getSupportLoaderManager().initLoader(0, args, this);
     }
 
@@ -106,9 +109,15 @@ public class BookListFragment extends Fragment implements
                 bookListLoadProgressView, true);
         SearchCategory searchCategory = null;
         SearchFilter searchFilter = null;
-        if (data != null) {
-            searchCategory = SearchCategory.valueOf(data.getString(ARG_SEARCH_CATEGORY));
-            searchFilter = SearchFilter.valueOf(data.getString(ARG_SEARCH_FILTER));
+        if (data != null && data.containsKey(ARG_SEARCH_CATEGORY) && data.containsKey(ARG_SEARCH_FILTER)) {
+            Serializable category = data.getSerializable(ARG_SEARCH_CATEGORY);
+            if (category != null) {
+                searchCategory = (SearchCategory) category;
+            }
+            Serializable filter = data.getSerializable(ARG_SEARCH_FILTER);
+            if (filter != null) {
+                searchFilter = (SearchFilter) filter;
+            }
         }
         return new BookListLoader(getActivity(), dataSource, searchCategory, searchFilter);
     }
@@ -161,12 +170,9 @@ public class BookListFragment extends Fragment implements
 
     @Override
     public void searchForBooks(SearchCategory searchCategory, SearchFilter searchFilter) {
-        Bundle args = null;
-        if (searchCategory != null) {
-            args = new Bundle();
-            args.putString(ARG_SEARCH_CATEGORY, searchCategory.name());
-            args.putString(ARG_SEARCH_FILTER, searchFilter.name());
-        }
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_SEARCH_CATEGORY, searchCategory);
+        args.putSerializable(ARG_SEARCH_FILTER, searchFilter);
         getActivity().getSupportLoaderManager().restartLoader(0, args, this);
     }
 

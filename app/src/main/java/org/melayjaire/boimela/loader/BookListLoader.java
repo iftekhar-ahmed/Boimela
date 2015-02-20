@@ -33,13 +33,6 @@ public class BookListLoader extends SimpleListLoader {
         if (dataSource.isEmpty()) {
             dataSource.insert(loadBookShelf().getBooks());
         }
-        if (searchCategory == null && searchFilter == null) {
-            return dataSource.getAllBooks();
-        } else if (searchFilter == null) {
-            return dataSource.getAllBooks(searchCategory);
-        } else if (searchCategory == null) {
-            return dataSource.getAllBooks(searchFilter);
-        }
         return dataSource.getAllBooks(searchCategory, searchFilter);
     }
 

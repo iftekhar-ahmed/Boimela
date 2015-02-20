@@ -88,9 +88,11 @@ public class HomeActivity extends ActionBarActivity implements
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name_bangla, R.string.app_name_bangla);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
+        searchCategory = null;
+        searchFilter = SearchFilter.Title.withQuery("", false);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        BookListFragment bookListFragment = BookListFragment.newInstance();
+        BookListFragment bookListFragment = BookListFragment.newInstance(searchCategory, searchFilter);
         fragmentTransaction.add(R.id.fragment_container, bookListFragment);
         ActionBarDrawerFragment actionBarDrawerFragment = ActionBarDrawerFragment.newInstance();
         fragmentTransaction.add(R.id.fragment_drawer_container, actionBarDrawerFragment);

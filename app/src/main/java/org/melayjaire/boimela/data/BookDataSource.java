@@ -98,8 +98,13 @@ public class BookDataSource {
     }
 
     public Cursor getPlainSuggestions(SearchCategory searchCategory, SearchFilter searchFilter) {
-        return database.query(true, TABLE_BOOK, searchFilter.getSearchSuggestionColumns(), searchCategory.getKeySearchColumn()
-                + "=?", new String[]{"1"}, searchFilter.getKeySearchColumn(), null, null, null);
+        if (searchFilter == null) {
+            return null;
+        }
+        return database.query(true, TABLE_BOOK, searchFilter.getSearchSuggestionColumns()
+                , searchCategory == null ? null : (searchCategory.getKeySearchColumn() + "=?")
+                , searchCategory == null ? null : new String[]{"1"}
+                , searchFilter.getKeySearchColumn(), null, null, null);
     }
 
     public List<Book> getAllBooks() {
@@ -108,27 +113,59 @@ public class BookDataSource {
     }
 
     /**
-     * View all books for a specific category e.g- new, favorite etc.
+     * List of books for a specific category e.g- new, favorite etc.
      *
-     * @param searchCategory category of books
+     * @param searchCategory category to group books
      * @return all books found for this category
      */
     public List<Book> getAllBooks(SearchCategory searchCategory) {
+        if (searchCategory == null) {
+            return getAllBooks();
+        }
         Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchCategory.getKeySearchColumn()
                 + "=?", new String[]{"1"}, null, null, null);
         return cursorToBookList(result);
     }
 
+    /**
+     * List of books against a specific attribute e.g- title, author, publisher etc.
+     *
+     * @param searchFilter attribute to search for in books
+     * @return all books found for this category
+     */
     public List<Book> getAllBooks(SearchFilter searchFilter) {
+        if (searchFilter == null) {
+            return getAllBooks();
+        }
         Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchFilter.getKeySearchColumn()
-                + (searchFilter.isFullyQualified() ? "=?" : " LIKE %?%"), new String[]{"1"}, null, null, null);
+                + (searchFilter.isFullyQualified() ? "=?" : " LIKE ?")
+                , new String[]{searchFilter.isFullyQualified()
+                ? searchFilter.getQueryText() : "%" + searchFilter.getQueryText() + "%"}
+                , null, null, null);
         return cursorToBookList(result);
     }
 
+    /**
+     * List of books for a specific category e.g- new, favorite etc.
+     * and against a specific attribute e.g- title, author, publisher etc.
+     *
+     * @param searchCategory category to group books
+     * @param searchFilter attribute to search for in books
+     * @return all books found for specified category and attribute
+     */
     public List<Book> getAllBooks(SearchCategory searchCategory, SearchFilter searchFilter) {
+        if (searchCategory == null && searchFilter == null) {
+            return getAllBooks();
+        } else if (searchFilter == null) {
+            return getAllBooks(searchCategory);
+        } else if (searchCategory == null) {
+            return getAllBooks(searchFilter);
+        }
         Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchCategory.getKeySearchColumn()
-                + "=? AND " + searchFilter.getKeySearchColumn() + (searchFilter.isFullyQualified() ? "=?" : " LIKE %?%")
-                , new String[]{"1", searchFilter.getQueryText()}, null, null, null);
+                + "=? AND " + searchFilter.getKeySearchColumn() + (searchFilter.isFullyQualified() ? "=?" : " LIKE ?")
+                , new String[]{"1"
+                , searchFilter.isFullyQualified() ? searchFilter.getQueryText() : "%" + searchFilter.getQueryText() + "%"}
+                , null, null, null);
         return cursorToBookList(result);
     }
 }

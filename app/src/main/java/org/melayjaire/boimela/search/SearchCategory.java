@@ -12,23 +12,23 @@ public enum SearchCategory implements SearchConfig {
     NewBooks() {
         @Override
         public String getKeySearchColumn() {
-            return FAVORITE;
-        }
-
-        @Override
-        public String[] getSearchSuggestionColumns() {
-            return new String[]{ID, FAVORITE};
-        }
-    },
-    Favorites() {
-        @Override
-        public String getKeySearchColumn() {
             return IS_NEW;
         }
 
         @Override
         public String[] getSearchSuggestionColumns() {
             return new String[]{ID, IS_NEW};
+        }
+    },
+    Favorites() {
+        @Override
+        public String getKeySearchColumn() {
+            return FAVORITE;
+        }
+
+        @Override
+        public String[] getSearchSuggestionColumns() {
+            return new String[]{ID, FAVORITE};
         }
     };
 }
