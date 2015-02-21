@@ -153,6 +153,7 @@ public class HomeActivity extends ActionBarActivity implements
             @Override
             public boolean onQueryTextSubmit(String s) {
                 onBookSearchListener.searchForBooks(searchCriteria, searchFilter.withQuery(s, false, true));
+                searchView.clearFocus();
                 return true;
             }
 
@@ -176,6 +177,7 @@ public class HomeActivity extends ActionBarActivity implements
                 Cursor cursor = (Cursor) searchSuggestionsAdapter.getItem(i);
                 String suggestion_text = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_INTENT_DATA));
                 onBookSearchListener.searchForBooks(searchCriteria, searchFilter.withQuery(suggestion_text, false, true));
+                searchView.clearFocus();
                 return true;
             }
         });
@@ -353,6 +355,6 @@ public class HomeActivity extends ActionBarActivity implements
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
                 break;
         }
-        onBookSearchListener.searchForBooks(searchCriteria, searchFilter);
+        onBookSearchListener.searchForBooks(searchCriteria, null);
     }
 }

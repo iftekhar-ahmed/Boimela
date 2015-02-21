@@ -14,16 +14,17 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
  */
 public enum SearchFilter {
 
-    Title(TITLE_ENGLISH, new String[]{ID, TITLE_ENGLISH, TITLE}),
+    Title(TITLE_ENGLISH, TITLE, new String[]{ID, TITLE_ENGLISH, TITLE}),
 
-    Author(AUTHOR_ENGLISH, new String[]{ID, AUTHOR_ENGLISH, AUTHOR}),
+    Author(AUTHOR_ENGLISH, AUTHOR, new String[]{ID, AUTHOR_ENGLISH, AUTHOR}),
 
-    Publisher(PUBLISHER_ENGLISH, new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER}),
+    Publisher(PUBLISHER_ENGLISH, PUBLISHER, new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER}),
 
-    BookCategory(CATEGORY, new String[]{ID, CATEGORY});
+    BookCategory(CATEGORY, CATEGORY, new String[]{ID, CATEGORY});
 
-    SearchFilter(String keySearchColumn, String[] searchSuggestionColumns) {
-        this.keySearchColumn = keySearchColumn;
+    SearchFilter(String primarySearchColumn, String secondarySearchColumn, String[] searchSuggestionColumns) {
+        this.primarySearchColumn = primarySearchColumn;
+        this.secondarySearchColumn = secondarySearchColumn;
         this.searchSuggestionColumns = searchSuggestionColumns;
     }
 
@@ -33,7 +34,9 @@ public enum SearchFilter {
 
     private boolean order = true;
 
-    private final String keySearchColumn;
+    private final String primarySearchColumn;
+
+    private final String secondarySearchColumn;
 
     private final String[] searchSuggestionColumns;
 
@@ -45,12 +48,12 @@ public enum SearchFilter {
         return fullyQualify;
     }
 
-    public String getKeySearchColumn() {
-        return keySearchColumn;
+    public String getPrimarySearchColumn() {
+        return primarySearchColumn;
     }
 
-    public String getDefaultOrderingColumn() {
-        return TITLE;
+    public String getSecondarySearchColumn() {
+        return secondarySearchColumn;
     }
 
     public String[] getSearchSuggestionColumns() {
@@ -64,7 +67,7 @@ public enum SearchFilter {
     /**
      * provide additional query requirements and result ordering
      *
-     * @param queryText    the text literal to search for
+     * @param queryText    the text literal to be used with primarySearchColumn of this filter
      * @param fullyQualify if true, requires result items to fully match queryText for this filter.
      *                     default is false.
      * @param order        whether or not to order result items

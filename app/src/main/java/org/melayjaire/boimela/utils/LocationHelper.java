@@ -30,7 +30,7 @@ public class LocationHelper implements LocationListener {
     public LocationHelper(Context context) {
         this.context = context;
         Utilities.saveGpsSetting(context, true);
-        dataSource = new BookDataSource(context);
+        dataSource = BookDataSource.getInstance(context);
         dataSource.open();
 
         if (favoriteBooks == null) {

@@ -22,6 +22,11 @@
             style="@style/DrawerItem_Text"
             app:font="@string/font_solaimanlipi"
             app:banglaText="@string/all_books" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            android:id="@+id/textView_counter_all_books"
+            style="@style/DrawerItem_Counter"
+            app:font="@string/font_solaimanlipi" />
     </LinearLayout>
 
     <LinearLayout
@@ -38,6 +43,11 @@
             style="@style/DrawerItem_Text"
             app:font="@string/font_solaimanlipi"
             app:banglaText="@string/new_book" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            android:id="@+id/textView_counter_new_books"
+            style="@style/DrawerItem_Counter"
+            app:font="@string/font_solaimanlipi" />
     </LinearLayout>
 
     <LinearLayout
@@ -54,5 +64,10 @@
             style="@style/DrawerItem_Text"
             app:font="@string/font_solaimanlipi"
             app:banglaText="@string/favorite_books" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            android:id="@+id/textView_counter_favorite_books"
+            style="@style/DrawerItem_Counter"
+            app:font="@string/font_solaimanlipi" />
     </LinearLayout>
 </LinearLayout>

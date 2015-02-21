@@ -30,22 +30,43 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.TABLE_BOOK;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
 
+/**
+ * Source class for accessing all sorts of book data through convenience
+ * methods. Must call {@link #open()} before accessing any data. Call {@link #close()}
+ * responsibly after usage
+ */
 public class BookDataSource {
 
     private SQLiteDatabase database;
     private BookDatabaseHelper dbHelper;
+    private List<OnDataChangeListener> onDataChangeListeners;
+
+    private static BookDataSource bookDataSource;
 
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
             DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW};
 
-    /**
-     * Source class for accessing all sorts of book data through convenience
-     * methods. Must call {@link #open()} before accessing any data. Call {@link #close()}
-     * responsibly after usage
-     */
-    public BookDataSource(Context context) {
+    public interface OnDataChangeListener {
+        void onUpdate();
+    }
+
+    private BookDataSource(Context context) {
         dbHelper = new BookDatabaseHelper(context);
+        onDataChangeListeners = new ArrayList<>();
+    }
+
+    public static BookDataSource getInstance(Context context) {
+        if (bookDataSource == null) {
+            bookDataSource = new BookDataSource(context);
+        }
+        return bookDataSource;
+    }
+
+    public static BookDataSource getInstance(Context context, OnDataChangeListener onDataChangeListener) {
+        BookDataSource bookDataSource = BookDataSource.getInstance(context);
+        bookDataSource.onDataChangeListeners.add(onDataChangeListener);
+        return bookDataSource;
     }
 
     public List<Book> cursorToBookList(Cursor dbResultCursor) {
@@ -62,11 +83,38 @@ public class BookDataSource {
     }
 
     public boolean isEmpty() {
+        long dataCount = count();
+        return dataCount <= 0;
+    }
+
+    public long count() {
         SQLiteStatement s = database.compileStatement("SELECT count(*) FROM "
                 + TABLE_BOOK);
-        int dataCount = (int) s.simpleQueryForLong();
+        long dataCount = s.simpleQueryForLong();
         s.close();
-        return dataCount <= 0;
+        return dataCount;
+    }
+
+    public long count(SearchCriteria searchCriteria) {
+        if (searchCriteria == null) {
+            return count();
+        }
+        SQLiteStatement s = database.compileStatement("SELECT count(*) FROM "
+                + TABLE_BOOK + " WHERE " + searchCriteria.getKeySearchColumn() + "=" + searchCriteria.getDefaultSearchArgument());
+        long dataCount = s.simpleQueryForLong();
+        s.close();
+        return dataCount;
+    }
+
+    public long count(SearchFilter searchFilter) {
+        if (searchFilter == null) {
+            return count();
+        }
+        SQLiteStatement s = database.compileStatement("SELECT count(DISTINCT " + searchFilter.getSecondarySearchColumn() + ") FROM "
+                + TABLE_BOOK);
+        long dataCount = s.simpleQueryForLong();
+        s.close();
+        return dataCount;
     }
 
     public void close() {
@@ -79,6 +127,9 @@ public class BookDataSource {
         database.update(TABLE_BOOK, values,
                 ID + "=?",
                 new String[]{String.valueOf(book.getId())});
+        for (OnDataChangeListener onDataChangeListener : onDataChangeListeners) {
+            onDataChangeListener.onUpdate();
+        }
     }
 
     public void insert(Book book) {
@@ -104,7 +155,7 @@ public class BookDataSource {
         return database.query(true, TABLE_BOOK, searchFilter.getSearchSuggestionColumns()
                 , searchCriteria == null ? null : (searchCriteria.getKeySearchColumn() + "=?")
                 , searchCriteria == null ? null : new String[]{"1"}
-                , searchFilter.getKeySearchColumn(), null, null, null);
+                , searchFilter.getPrimarySearchColumn(), null, null, null);
     }
 
     public List<Book> getAllBooks() {
@@ -123,7 +174,8 @@ public class BookDataSource {
             return getAllBooks();
         }
         Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchCriteria.getKeySearchColumn()
-                + "=?", new String[]{searchCriteria.getDefaultSearchArgument()}, null, null, null);
+                + "=?", new String[]{searchCriteria.getDefaultSearchArgument()}, null, null
+                , TITLE);
         return cursorToBookList(result);
     }
 
@@ -137,12 +189,12 @@ public class BookDataSource {
         if (searchFilter == null) {
             return getAllBooks();
         }
-        Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchFilter.getKeySearchColumn()
+        Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchFilter.getPrimarySearchColumn()
                 + (searchFilter.isFullyQualified() ? "=?" : " LIKE ?")
                 , new String[]{searchFilter.isFullyQualified()
                 ? searchFilter.getQueryText() : "%" + searchFilter.getQueryText() + "%"}
                 , null, null
-                , searchFilter.order() ? searchFilter.getDefaultOrderingColumn() : null);
+                , searchFilter.order() ? TITLE : null);
         return cursorToBookList(result);
     }
 
@@ -163,11 +215,11 @@ public class BookDataSource {
             return getAllBooks(searchFilter);
         }
         Cursor result = database.query(TABLE_BOOK, allColumnsBook, searchCriteria.getKeySearchColumn()
-                + "=? AND " + searchFilter.getKeySearchColumn() + (searchFilter.isFullyQualified() ? "=?" : " LIKE ?")
+                + "=? AND " + searchFilter.getPrimarySearchColumn() + (searchFilter.isFullyQualified() ? "=?" : " LIKE ?")
                 , new String[]{searchCriteria.getDefaultSearchArgument()
                 , searchFilter.isFullyQualified() ? searchFilter.getQueryText() : "%" + searchFilter.getQueryText() + "%"}
                 , null, null
-                , searchFilter.order() ? searchFilter.getDefaultOrderingColumn() : null);
+                , searchFilter.order() ? TITLE : null);
         return cursorToBookList(result);
     }
 }

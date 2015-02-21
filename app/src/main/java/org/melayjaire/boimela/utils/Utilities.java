@@ -30,15 +30,31 @@ import org.melayjaire.boimela.bangla.TypefaceSpan;
 import org.melayjaire.boimela.model.Book;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class Utilities {
 
-    public static final String MAX_BOOK_INDEX = "max_index";
-    public static final String GPS_TRACKING = "gps_tracking";
     public static final boolean isBuildAboveHoneyComb = Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR2;
     public static final boolean isBanglaAvailable = isBanglaAvailable();
+    public static final String MAX_BOOK_INDEX = "max_index";
+    public static final String GPS_TRACKING = "gps_tracking";
+
+    private static final HashMap<Character, Character> digitsMap = new HashMap<>();
+
+    static {
+        digitsMap.put('0', '০');
+        digitsMap.put('1', '১');
+        digitsMap.put('2', '২');
+        digitsMap.put('3', '৩');
+        digitsMap.put('4', '৪');
+        digitsMap.put('5', '৫');
+        digitsMap.put('6', '৬');
+        digitsMap.put('7', '৭');
+        digitsMap.put('8', '৮');
+        digitsMap.put('9', '৯');
+    }
 
     private static Typeface typeface;
 
@@ -52,7 +68,7 @@ public class Utilities {
 
     public static SpannableString getBanglaSpannableString(String banglaText, Context context) {
         if (banglaText == null) {
-            return new SpannableString(new String(""));
+            return new SpannableString("");
         }
         if (isBuildAboveHoneyComb) {
             SpannableString spannableString = new SpannableString(banglaText);
@@ -191,5 +207,15 @@ public class Utilities {
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(2, mBuilder.build());
+    }
+
+    public static String translateCount(long count) {
+        count = count > 100 ? (count - count % 100) : count;
+        char[] digits = (String.valueOf(count)).toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char digit : digits) {
+            sb.append(digitsMap.get(digit));
+        }
+        return count > 99 ? sb.append("+").toString() : sb.toString();
     }
 }

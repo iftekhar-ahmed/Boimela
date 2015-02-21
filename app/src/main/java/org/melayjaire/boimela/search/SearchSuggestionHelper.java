@@ -36,7 +36,7 @@ public class SearchSuggestionHelper {
     }
 
     public Cursor getSuggestions(Cursor allSuggestionsCursor, SearchFilter searchFilter) {
-        int searchColumnIndex = allSuggestionsCursor.getColumnIndex(searchFilter.getKeySearchColumn());
+        int searchColumnIndex = allSuggestionsCursor.getColumnIndex(searchFilter.getPrimarySearchColumn());
         String value;
         String substring;
         String token;

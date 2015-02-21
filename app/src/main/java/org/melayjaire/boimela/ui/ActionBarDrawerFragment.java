@@ -9,12 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.melayjaire.boimela.R;
+import org.melayjaire.boimela.data.BookDataSource;
+import org.melayjaire.boimela.search.SearchCriteria;
+import org.melayjaire.boimela.utils.Utilities;
+import org.melayjaire.boimela.view.BanglaTextView;
 
-public class ActionBarDrawerFragment extends Fragment implements View.OnClickListener {
+public class ActionBarDrawerFragment extends Fragment implements View.OnClickListener, BookDataSource.OnDataChangeListener {
 
     private int selectedItemId;
     private View selectedItem;
+    private BanglaTextView allBooksCounter;
+    private BanglaTextView favBooksCounter;
+    private BanglaTextView newBooksCounter;
     private OnClickListener onClickListener;
+    private BookDataSource bookDataSource;
 
     private static final String ARG_SELECTED_ITEM_ID = "_arg_selected_item_id";
 
@@ -29,14 +37,28 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         return new ActionBarDrawerFragment();
     }
 
+    private void updateAllCounters() {
+        allBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count()));
+        favBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Favorites)));
+        newBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.NewBooks)));
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             onClickListener = (OnClickListener) getActivity();
+            bookDataSource = BookDataSource.getInstance(getActivity(), this);
+            bookDataSource.open();
         } catch (ClassCastException e) {
             Log.e(getClass().getSimpleName(), "activity must implement OnClickListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        bookDataSource.close();
+        super.onDetach();
     }
 
     @Override
@@ -58,12 +80,19 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_action_bar_drawer, container, false);
+
         View allBooks = rootView.findViewById(R.id.drawer_item_all_books);
         allBooks.setOnClickListener(this);
         View newBooks = rootView.findViewById(R.id.drawer_item_new_books);
         newBooks.setOnClickListener(this);
         View favoriteBooks = rootView.findViewById(R.id.drawer_item_favorite_books);
         favoriteBooks.setOnClickListener(this);
+
+        allBooksCounter = (BanglaTextView) allBooks.findViewById(R.id.textView_counter_all_books);
+        favBooksCounter = (BanglaTextView) favoriteBooks.findViewById(R.id.textView_counter_favorite_books);
+        newBooksCounter = (BanglaTextView) newBooks.findViewById(R.id.textView_counter_new_books);
+        updateAllCounters();
+
         switch (selectedItemId) {
             case R.id.drawer_item_all_books:
                 selectedItem = allBooks;
@@ -89,5 +118,10 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         selectedItemId = selectedItem.getId();
         selectedItem.setSelected(true);
         onClickListener.onItemClick(selectedItem);
+    }
+
+    @Override
+    public void onUpdate() {
+        updateAllCounters();
     }
 }
