@@ -217,21 +217,21 @@ public class Book implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(id);
-        parcel.writeByte((byte) (isNew ? 1 : 0));
-        parcel.writeString(title);
-        parcel.writeString(titleInEnglish);
-        parcel.writeString(author);
-        parcel.writeString(authorInEnglish);
-        parcel.writeString(category);
-        parcel.writeString(publisher);
-        parcel.writeString(publisherInEnglish);
-        parcel.writeString(price);
-        parcel.writeString(description);
-        parcel.writeDouble(stallLatitude);
-        parcel.writeDouble(stallLongitude);
-        parcel.writeByte((byte) (isFavorite ? 1 : 0));
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeLong(id);
+        out.writeByte((byte) (isNew ? 1 : 0));
+        out.writeString(title);
+        out.writeString(titleInEnglish);
+        out.writeString(author);
+        out.writeString(authorInEnglish);
+        out.writeString(category);
+        out.writeString(publisher);
+        out.writeString(publisherInEnglish);
+        out.writeString(price);
+        out.writeString(description);
+        out.writeDouble(stallLatitude);
+        out.writeDouble(stallLongitude);
+        out.writeByte((byte) (isFavorite ? 1 : 0));
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {

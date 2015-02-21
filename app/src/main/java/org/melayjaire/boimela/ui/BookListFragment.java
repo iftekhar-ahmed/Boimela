@@ -56,6 +56,10 @@ public class BookListFragment extends Fragment implements
     public BookListFragment() {
     }
 
+    public BookListAdapter getBookListAdapter() {
+        return bookListAdapter;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

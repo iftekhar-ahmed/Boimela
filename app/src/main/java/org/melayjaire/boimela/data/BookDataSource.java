@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 
 import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.model.Publisher;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 
@@ -31,7 +32,7 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
 
 /**
- * Source class for accessing all sorts of book data through convenience
+ * Source class to access all sorts of book data through convenience
  * methods. Must call {@link #open()} before accessing any data. Call {@link #close()}
  * responsibly after usage
  */
@@ -46,6 +47,8 @@ public class BookDataSource {
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
             DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW};
+    private final String[] allColumnsPublisher = {PUBLISHER, PUBLISHER_ENGLISH,
+            STALL_LAT, STALL_LONG};
 
     public interface OnDataChangeListener {
         void onUpdate();
@@ -73,6 +76,15 @@ public class BookDataSource {
         List<Book> books = new ArrayList<>();
         while (dbResultCursor.moveToNext()) {
             books.add(new Book().fromCursor(dbResultCursor));
+        }
+        dbResultCursor.close();
+        return books;
+    }
+
+    public List<Publisher> cursorToPublisherList(Cursor dbResultCursor) {
+        List<Publisher> books = new ArrayList<>();
+        while (dbResultCursor.moveToNext()) {
+            books.add(new Publisher().fromCursor(dbResultCursor));
         }
         dbResultCursor.close();
         return books;
@@ -221,5 +233,20 @@ public class BookDataSource {
                 , null, null
                 , searchFilter.order() ? TITLE : null);
         return cursorToBookList(result);
+    }
+
+    public List<Publisher> getAllPublishers() {
+        Cursor result = database.query(true, TABLE_BOOK, allColumnsPublisher, null, null, null, null, PUBLISHER, null);
+        return cursorToPublisherList(result);
+    }
+
+    public List<Publisher> getAllPublishers(SearchCriteria searchCriteria) {
+        if (searchCriteria == null) {
+            return getAllPublishers();
+        }
+        Cursor result = database.query(true, TABLE_BOOK, allColumnsPublisher, searchCriteria.getKeySearchColumn()
+                + "=?", new String[]{searchCriteria.getDefaultSearchArgument()}, null, null
+                , PUBLISHER, null);
+        return cursorToPublisherList(result);
     }
 }

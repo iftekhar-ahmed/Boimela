@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.provider.BaseColumns;
 
-import org.melayjaire.boimela.utils.EditDistance;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

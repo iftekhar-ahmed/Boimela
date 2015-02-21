@@ -39,9 +39,8 @@
     <string name="no_gps_connection">আপনার জিপিএস সংযোগ বিচ্ছিন্ন রয়েছে।  দুঃখিত!</string>
     <string name="no_favbook_added">কোন পছন্দের বই যোগ করা হয়নি।  দুঃখিত!</string>
     <string name="no_gps_set">আপনি জিপিএস চালু করেননি। এই সার্ভিস পেতে হলে আপনাকে জিপিএস চালু করতে হবে।</string>
-    <string name="available_books_bylocation">আপনার আশেপাশের বই গুলো।</string>
     <string name="gps_search">পছন্দের\nবই বার্তা </string>
-    <string name="favorite_books_alarm">পছন্দের বই বার্তা </string>
+    <string name="nearby_favorite_books">আশেপাশের পছন্দের বইগুলো</string>
     <string name="gps_stop">বার্তা\nচাই না</string>
     <string name="favorite_book_added">বইটি পছন্দের তালিকায় যুক্ত হয়েছে</string>
     <string name="taka">৳</string>

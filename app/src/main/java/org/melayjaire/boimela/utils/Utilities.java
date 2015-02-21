@@ -3,17 +3,16 @@ package org.melayjaire.boimela.utils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.RecyclerView;
@@ -29,17 +28,16 @@ import org.melayjaire.boimela.bangla.AndroidCustomFontSupport;
 import org.melayjaire.boimela.bangla.TypefaceSpan;
 import org.melayjaire.boimela.model.Book;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class Utilities {
 
     public static final boolean isBuildAboveHoneyComb = Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR2;
     public static final boolean isBanglaAvailable = isBanglaAvailable();
-    public static final String MAX_BOOK_INDEX = "max_index";
-    public static final String GPS_TRACKING = "gps_tracking";
 
     private static final HashMap<Character, Character> digitsMap = new HashMap<>();
 
@@ -89,15 +87,6 @@ public class Utilities {
             }
         }
         return false;
-    }
-
-    public static void storeMaxBookIndex(Context context, List<Long> bookIndexes) {
-        Long maxBookIndex = Collections.max(bookIndexes);
-        SharedPreferences preferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putLong(MAX_BOOK_INDEX, maxBookIndex);
-        editor.commit();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -163,45 +152,37 @@ public class Utilities {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    public static void saveGpsSetting(Context context,
-                                      boolean isTrackingServiceOn) {
-        SharedPreferences preferences = PreferenceManager
-                .getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(GPS_TRACKING, isTrackingServiceOn);
-        editor.commit();
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> runningServices = manager.getRunningServices(Integer.MAX_VALUE);
+        for (ActivityManager.RunningServiceInfo service : runningServices) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public static void showCustomNotification(Context context, List<Book> books) {
+    public static void showNotificationForNearbyFavoriteBooks(Context context, Set<Book> books) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                context).setSmallIcon(R.drawable.ic_launcher).setContentTitle(
-                context.getString(R.string.available_books_bylocation));
+                context).setSmallIcon(R.drawable.ic_star_full).setContentTitle(
+                context.getString(R.string.nearby_favorite_books));
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        String[] events = null;
         if (books != null) {
-            events = new String[books.size()];
-            int index = 0;
             for (Book book : books) {
-                events[index] = book.getPublisher() + " -> " + book.getTitle();
-                inboxStyle.addLine(events[index]);
-                index++;
+                inboxStyle.addLine(book.getPublisher() + " -> " + book.getTitle());
             }
         }
         mBuilder.setStyle(inboxStyle);
-        Intent resultIntent = new Intent(context,
-                NotificationResultActivity.class);
 
-        if (events != null) {
+        Intent resultIntent = new Intent(context, NotificationResultActivity.class);
+        if (books != null) {
             Bundle b = new Bundle();
-            b.putStringArray("BOOK_EVENT", events);
+            b.putParcelableArrayList(Constants.EXTRA_BOOKS, new ArrayList<>(books));
             resultIntent.putExtras(b);
         }
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(NotificationResultActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) context

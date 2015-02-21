@@ -3,11 +3,9 @@ package org.melayjaire.boimela;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,13 +33,16 @@ import org.json.JSONObject;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
+import org.melayjaire.boimela.service.BookTrackerService;
 import org.melayjaire.boimela.ui.ActionBarDrawerFragment;
 import org.melayjaire.boimela.ui.BookListFragment;
+import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
-import org.melayjaire.boimela.utils.LocationHelper;
+import org.melayjaire.boimela.utils.PreferenceHelper;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeActivity extends ActionBarActivity implements
@@ -56,8 +57,7 @@ public class HomeActivity extends ActionBarActivity implements
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FloatingActionButton fab;
-    private LocationHelper locationHelper;
-    private SharedPreferences preference;
+    private PreferenceHelper preferenceHelper;
     private OnBookSearchListener onBookSearchListener;
     private SimpleCursorAdapter searchSuggestionsAdapter;
 
@@ -65,11 +65,26 @@ public class HomeActivity extends ActionBarActivity implements
 
     private static final String ARG_TITLE = "_arg_title";
 
+    private void switchFab(boolean on) {
+        if (fab == null) {
+            return;
+        }
+        if (on) {
+            fab.setColorNormalResId(R.color.holo_red_dark);
+            fab.setColorPressedResId(R.color.holo_red_light);
+            fab.setIcon(R.drawable.ic_gps_fixed);
+        } else {
+            fab.setColorNormalResId(R.color.holo_blue_dark);
+            fab.setColorPressedResId(R.color.holo_blue_light);
+            fab.setIcon(R.drawable.ic_gps_not_fixed);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        preference = PreferenceManager.getDefaultSharedPreferences(this);
+        preferenceHelper = PreferenceHelper.getInstance(this);
 
         String title = getString(R.string.all_books);
 
@@ -82,6 +97,7 @@ public class HomeActivity extends ActionBarActivity implements
         setSupportActionBar(toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab_locate_books);
         fab.setOnClickListener(this);
+        switchFab(Utilities.isServiceRunning(this, BookTrackerService.class));
         drawerLayout = (DrawerLayout) findViewById(R.id.navigation_drawer);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name_bangla, R.string.app_name_bangla);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
@@ -224,38 +240,37 @@ public class HomeActivity extends ActionBarActivity implements
     }
 
     private void locateBooks() {
-        if (preference.getBoolean(Utilities.GPS_TRACKING, false)) {
-            Utilities.saveGpsSetting(this, false);
-            if (locationHelper != null) {
-                locationHelper.stopGpsTracking();
+        if (Utilities.isGpsEnabled(getBaseContext())) {
+            if (Utilities.isServiceRunning(this, BookTrackerService.class)) {
+                stopService(new Intent(this, BookTrackerService.class));
+                switchFab(false);
+            } else {
+                startService(new Intent(this, BookTrackerService.class));
+                switchFab(true);
             }
         } else {
-            if (!Utilities.isGpsEnabled(getBaseContext())) {
-                new MaterialDialog.Builder(this)
-                        .title(Utilities.getBanglaSpannableString(getString(R.string.notice), this))
-                        .content(Utilities.getBanglaSpannableString(getString(R.string.gps_alarm_msg), this))
-                        .positiveText(Utilities.getBanglaSpannableString(getString(R.string.yes), this))
-                        .positiveColorRes(R.color.material_blue_grey_800)
-                        .negativeText(Utilities.getBanglaSpannableString(getString(R.string.no), this))
-                        .negativeColorRes(R.color.material_blue_grey_800)
-                        .backgroundColor(getResources().getColor(android.R.color.white))
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                final Intent gpsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                gpsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivityForResult(gpsIntent, HomeActivity.GPS_REQUEST_CODE);
-                            }
+            new MaterialDialog.Builder(this)
+                    .title(Utilities.getBanglaSpannableString(getString(R.string.notice), this))
+                    .content(Utilities.getBanglaSpannableString(getString(R.string.gps_alarm_msg), this))
+                    .positiveText(Utilities.getBanglaSpannableString(getString(R.string.yes), this))
+                    .positiveColorRes(R.color.material_blue_grey_800)
+                    .negativeText(Utilities.getBanglaSpannableString(getString(R.string.no), this))
+                    .negativeColorRes(R.color.material_blue_grey_800)
+                    .backgroundColor(getResources().getColor(android.R.color.white))
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            final Intent gpsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            gpsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivityForResult(gpsIntent, HomeActivity.GPS_REQUEST_CODE);
+                        }
 
-                            @Override
-                            public void onNegative(MaterialDialog dialog) {
-                                super.onNegative(dialog);
-                            }
-                        })
-                        .show();
-            } else {
-                locationHelper = new LocationHelper(this);
-            }
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            super.onNegative(dialog);
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -263,12 +278,9 @@ public class HomeActivity extends ActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GPS_REQUEST_CODE) {
-            if (!Utilities.isGpsEnabled(getBaseContext())) {
-                Toast.makeText(this, Utilities.getBanglaSpannableString(getString(R.string.no_gps_set), this)
-                        , Toast.LENGTH_LONG).show();
-                Utilities.saveGpsSetting(this, false);
-            } else {
-                locationHelper = new LocationHelper(this);
+            if (Utilities.isGpsEnabled(getBaseContext())) {
+                startService(new Intent(this, BookTrackerService.class));
+                switchFab(true);
             }
         }
     }
@@ -283,7 +295,6 @@ public class HomeActivity extends ActionBarActivity implements
         List<Book> books = new ArrayList<>();
         List<Long> bookIndexes = new ArrayList<>();
         try {
-
             for (int i = 0; i < result.length(); i++) {
                 Book book = new Book();
                 JSONObject jsonObject = (JSONObject) result.get(i);
@@ -305,12 +316,11 @@ public class HomeActivity extends ActionBarActivity implements
                 bookIndexes.add(jsonObject.getLong("Index"));
                 books.add(book);
             }
-            Utilities.storeMaxBookIndex(this, bookIndexes);
+            preferenceHelper.setLong(Constants.PREF_KEY_MAX_BOOK_INDEX, Collections.max(bookIndexes));
             bookIndexes.clear();
             // dataSource.insert(books);
             books.clear();
             showRefreshProgress(false);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

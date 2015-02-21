@@ -22,10 +22,6 @@ import org.melayjaire.boimela.utils.Utilities;
 public class BookDetailFragment extends DialogFragment {
 
     private Book book;
-    private ImageView imageViewBookTitle;
-    private TextView textViewBookAuthor;
-    private TextView textViewBookPublisher;
-    private TextView textViewBookPrice;
 
     private static final String ARG_BOOK = "_book";
 
@@ -53,18 +49,18 @@ public class BookDetailFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book_detail, container, false);
-        imageViewBookTitle = (ImageView) rootView.findViewById(R.id.imageView_book_cover);
+        ImageView imageViewBookTitle = (ImageView) rootView.findViewById(R.id.imageView_book_cover);
         imageViewBookTitle.setImageDrawable(TextDrawable.builder()
                 .beginConfig()
                 .withBorder(4).fontSize(40)
                 .endConfig()
                 .buildRect(Utilities.getBanglaSpannableString(book.getTitle(), getActivity())
                         , ColorGenerator.DEFAULT.getColor(book.getId())));
-        textViewBookAuthor = (TextView) rootView.findViewById(R.id.textView_author_name);
+        TextView textViewBookAuthor = (TextView) rootView.findViewById(R.id.textView_author_name);
         textViewBookAuthor.setText(Utilities.getBanglaSpannableString(book.getAuthor(), getActivity()));
-        textViewBookPublisher = (TextView) rootView.findViewById(R.id.textView_publisher_name);
+        TextView textViewBookPublisher = (TextView) rootView.findViewById(R.id.textView_publisher_name);
         textViewBookPublisher.setText(Utilities.getBanglaSpannableString(book.getPublisher(), getActivity()));
-        textViewBookPrice = (TextView) rootView.findViewById(R.id.textView_price_value);
+        TextView textViewBookPrice = (TextView) rootView.findViewById(R.id.textView_price_value);
         textViewBookPrice.setText(Utilities.getBanglaSpannableString(getString(R.string.taka) + book.getPrice(), getActivity()));
         return rootView;
     }

@@ -1,68 +1,55 @@
 package org.melayjaire.boimela;
 
-import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
+import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.ui.BookListFragment;
+import org.melayjaire.boimela.ui.NearbyBookListFragment;
+import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class NotificationResultActivity extends Activity {
-
-    private String[] values;
+public class NotificationResultActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_result);
 
-        setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books_alarm), this));
+        ArrayList<Book> books = null;
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            values = extras.getStringArray("BOOK_EVENT");
-            ListView listview = (ListView) findViewById(R.id.lv_notification);
-
-            ArrayList<String> list = new ArrayList<String>();
-            list.clear();
-
-            for (int i = 0; i < values.length; ++i) {
-                list.add(values[i]);
-                Log.e("Books:", "" + values[i] + "" + i);
-            }
-            final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                    android.R.layout.simple_list_item_1, list);
-            listview.setAdapter(adapter);
+            books = extras.getParcelableArrayList(Constants.EXTRA_BOOKS);
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_home);
+        // toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.nearby_favorite_books), this));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        BookListFragment nearbyBookListFragment = NearbyBookListFragment.newInstance(books);
+        fragmentTransaction.add(R.id.fragment_container, nearbyBookListFragment);
+        fragmentTransaction.commit();
     }
 
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        List<String> books;
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-
-            books = objects;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent homeIntent = new Intent(this, HomeActivity.class);
+            startActivity(homeIntent);
+            finish();
+            return true;
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            String notfText = books.get(position);
-            View v = super.getView(position, convertView, parent);
-            ((TextView) v).setText(Utilities.getBanglaSpannableString(notfText, NotificationResultActivity.this));
-            return v;
-        }
+        return super.onOptionsItemSelected(item);
     }
 }
