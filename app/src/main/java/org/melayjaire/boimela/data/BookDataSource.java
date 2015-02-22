@@ -2,15 +2,18 @@ package org.melayjaire.boimela.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
+import android.support.v4.content.LocalBroadcastManager;
 
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.Publisher;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
+import org.melayjaire.boimela.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +41,9 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
  */
 public class BookDataSource {
 
+    private Context context;
     private SQLiteDatabase database;
     private BookDatabaseHelper dbHelper;
-    private List<OnDataChangeListener> onDataChangeListeners;
 
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
@@ -48,22 +51,14 @@ public class BookDataSource {
     private final String[] allColumnsPublisher = {PUBLISHER, PUBLISHER_ENGLISH,
             STALL_LAT, STALL_LONG};
 
-    public interface OnDataChangeListener {
-        void onUpdate();
-    }
-
     public BookDataSource(Context context) {
-        init(context);
-    }
-
-    public BookDataSource(Context context, OnDataChangeListener onDataChangeListener) {
-        init(context);
-        onDataChangeListeners.add(onDataChangeListener);
-    }
-
-    private void init(Context context) {
+        this.context = context;
         dbHelper = new BookDatabaseHelper(context);
-        onDataChangeListeners = new ArrayList<>();
+    }
+
+    private void sendDataChangedBroadcast(String action) {
+        Intent intent = new Intent(action);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     public List<Book> cursorToBookList(Cursor dbResultCursor) {
@@ -133,9 +128,7 @@ public class BookDataSource {
         database.update(TABLE_BOOK, values,
                 ID + "=?",
                 new String[]{String.valueOf(book.getId())});
-        for (OnDataChangeListener onDataChangeListener : onDataChangeListeners) {
-            onDataChangeListener.onUpdate();
-        }
+        sendDataChangedBroadcast(Constants.ACTION_UPDATE_BOOK);
     }
 
     public void insert(Book book) {

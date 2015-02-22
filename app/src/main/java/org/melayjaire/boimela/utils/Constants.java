@@ -7,6 +7,7 @@ public final class Constants {
 
     public static final String PREF_KEY_MAX_BOOK_INDEX = "max_index";
     public static final String EXTRA_BOOKS = "_books";
+    public static final String ACTION_UPDATE_BOOK = "_action_book_update";
 
     private Constants() {
     }

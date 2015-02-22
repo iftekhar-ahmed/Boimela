@@ -1,19 +1,23 @@
 package org.melayjaire.boimela.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.Publisher;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
+import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.util.ArrayList;
@@ -29,6 +33,14 @@ public class BookTrackerService extends Service {
     private Set<Publisher> nearbyPublishers;
     private BookDataSource dataSource;
     private UserLocationListener userLocationListener;
+    private BroadcastReceiver bookUpdateBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.ACTION_UPDATE_BOOK)) {
+                createPublisherToBooksMap();
+            }
+        }
+    };
 
     public static final long FILTER_DISTANCE = 10;
 
@@ -96,13 +108,10 @@ public class BookTrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        dataSource = new BookDataSource(this, new BookDataSource.OnDataChangeListener() {
-            @Override
-            public void onUpdate() {
-                createPublisherToBooksMap();
-            }
-        });
+        dataSource = new BookDataSource(this);
         dataSource.open();
+        LocalBroadcastManager.getInstance(this).registerReceiver(bookUpdateBroadcastReceiver
+                , new IntentFilter(Constants.ACTION_UPDATE_BOOK));
 
         createPublisherToBooksMap();
         nearbyPublishers = new HashSet<>();

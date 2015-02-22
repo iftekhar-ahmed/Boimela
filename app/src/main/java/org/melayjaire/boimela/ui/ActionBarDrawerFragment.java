@@ -1,8 +1,13 @@
 package org.melayjaire.boimela.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import android.view.ViewGroup;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.search.SearchCriteria;
+import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
 
@@ -23,6 +29,14 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     private BanglaTextView newBooksCounter;
     private OnClickListener onClickListener;
     private BookDataSource bookDataSource;
+    private BroadcastReceiver bookUpdateBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.ACTION_UPDATE_BOOK)) {
+                updateAllCounters();
+            }
+        }
+    };
 
     private static final String ARG_SELECTED_ITEM_ID = "_arg_selected_item_id";
 
@@ -46,15 +60,12 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        bookDataSource = new BookDataSource(activity);
+        bookDataSource.open();
+        LocalBroadcastManager.getInstance(activity).registerReceiver(bookUpdateBroadcastReceiver
+                , new IntentFilter(Constants.ACTION_UPDATE_BOOK));
         try {
             onClickListener = (OnClickListener) getActivity();
-            bookDataSource = new BookDataSource(activity, new BookDataSource.OnDataChangeListener() {
-                @Override
-                public void onUpdate() {
-                    updateAllCounters();
-                }
-            });
-            bookDataSource.open();
         } catch (ClassCastException e) {
             Log.e(getClass().getSimpleName(), "activity must implement OnClickListener");
         }
