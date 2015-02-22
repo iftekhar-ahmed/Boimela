@@ -239,7 +239,7 @@ public class HomeActivity extends ActionBarActivity implements
         return true;
     }
 
-    private void locateBooks() {
+    private void startBookTracking() {
         if (Utilities.isGpsEnabled(getBaseContext())) {
             if (Utilities.isServiceRunning(this, BookTrackerService.class)) {
                 stopService(new Intent(this, BookTrackerService.class));
@@ -344,7 +344,7 @@ public class HomeActivity extends ActionBarActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_locate_books:
-                locateBooks();
+                startBookTracking();
         }
     }
 

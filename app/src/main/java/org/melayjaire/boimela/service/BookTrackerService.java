@@ -96,7 +96,7 @@ public class BookTrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        dataSource = BookDataSource.getInstance(this, new BookDataSource.OnDataChangeListener() {
+        dataSource = new BookDataSource(this, new BookDataSource.OnDataChangeListener() {
             @Override
             public void onUpdate() {
                 createPublisherToBooksMap();

@@ -95,7 +95,7 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        dataSource = BookDataSource.getInstance(getActivity());
+        dataSource = new BookDataSource(activity);
         dataSource.open();
     }
 

@@ -14,7 +14,7 @@ import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
 
-public class ActionBarDrawerFragment extends Fragment implements View.OnClickListener, BookDataSource.OnDataChangeListener {
+public class ActionBarDrawerFragment extends Fragment implements View.OnClickListener {
 
     private int selectedItemId;
     private View selectedItem;
@@ -48,7 +48,12 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         super.onAttach(activity);
         try {
             onClickListener = (OnClickListener) getActivity();
-            bookDataSource = BookDataSource.getInstance(getActivity(), this);
+            bookDataSource = new BookDataSource(activity, new BookDataSource.OnDataChangeListener() {
+                @Override
+                public void onUpdate() {
+                    updateAllCounters();
+                }
+            });
             bookDataSource.open();
         } catch (ClassCastException e) {
             Log.e(getClass().getSimpleName(), "activity must implement OnClickListener");
@@ -118,10 +123,5 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         selectedItemId = selectedItem.getId();
         selectedItem.setSelected(true);
         onClickListener.onItemClick(selectedItem);
-    }
-
-    @Override
-    public void onUpdate() {
-        updateAllCounters();
     }
 }

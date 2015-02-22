@@ -42,8 +42,6 @@ public class BookDataSource {
     private BookDatabaseHelper dbHelper;
     private List<OnDataChangeListener> onDataChangeListeners;
 
-    private static BookDataSource bookDataSource;
-
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
             DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW};
@@ -54,22 +52,18 @@ public class BookDataSource {
         void onUpdate();
     }
 
-    private BookDataSource(Context context) {
+    public BookDataSource(Context context) {
+        init(context);
+    }
+
+    public BookDataSource(Context context, OnDataChangeListener onDataChangeListener) {
+        init(context);
+        onDataChangeListeners.add(onDataChangeListener);
+    }
+
+    private void init(Context context) {
         dbHelper = new BookDatabaseHelper(context);
         onDataChangeListeners = new ArrayList<>();
-    }
-
-    public static BookDataSource getInstance(Context context) {
-        if (bookDataSource == null) {
-            bookDataSource = new BookDataSource(context);
-        }
-        return bookDataSource;
-    }
-
-    public static BookDataSource getInstance(Context context, OnDataChangeListener onDataChangeListener) {
-        BookDataSource bookDataSource = BookDataSource.getInstance(context);
-        bookDataSource.onDataChangeListeners.add(onDataChangeListener);
-        return bookDataSource;
     }
 
     public List<Book> cursorToBookList(Cursor dbResultCursor) {
