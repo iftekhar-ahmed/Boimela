@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingBottom="16dp"
+    android:background="@drawable/bg_list_item">
+
+    <ImageView
+        android:id="@+id/imageView_author"
+        android:layout_width="@dimen/author_avatar_width"
+        android:layout_height="@dimen/author_avatar_height"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:contentDescription="@string/author" />
+
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/textView_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/imageView_author"
+        android:layout_toRightOf="@id/imageView_author"
+        android:layout_toStartOf="@+id/textView_book_count"
+        android:layout_toLeftOf="@+id/textView_book_count"
+        android:layout_centerVertical="true"
+        android:maxLines="1"
+        app:font="@string/font_solaimanlipi"
+        app:banglaText="@string/author"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="16sp" />
+
+    <org.melayjaire.boimela.view.BanglaTextView
+        android:id="@+id/textView_book_count"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        app:font="@string/font_solaimanlipi"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16sp" />
+</RelativeLayout>
