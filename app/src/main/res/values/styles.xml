@@ -13,7 +13,7 @@
         <item name="android:paddingRight">@dimen/drawer_item_padding_end</item>
         <item name="android:paddingTop">@dimen/drawer_item_padding_top</item>
         <item name="android:paddingBottom">@dimen/drawer_item_padding_bottom</item>
-        <item name="android:background">@drawable/bg_list_item</item>
+        <item name="android:background">@drawable/bg_drawer_item</item>
         <item name="android:clickable">true</item>
     </style>
 
