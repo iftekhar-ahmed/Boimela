@@ -56,8 +56,12 @@ public class BookListFragment extends Fragment implements
     public BookListFragment() {
     }
 
-    public BookListAdapter getBookListAdapter() {
+    protected BookListAdapter getBookListAdapter() {
         return bookListAdapter;
+    }
+
+    protected RecyclerView getmRecyclerView() {
+        return mRecyclerView;
     }
 
     @Override

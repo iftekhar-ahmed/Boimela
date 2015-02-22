@@ -3,6 +3,8 @@ package org.melayjaire.boimela.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import org.melayjaire.boimela.model.Book;
 
@@ -32,6 +34,14 @@ public class NearbyBookListFragment extends BookListFragment {
             List<Book> nearbyBooks = args.getParcelableArrayList(ARG_NEARBY_BOOKS);
             getBookListAdapter().swapList(nearbyBooks);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RecyclerView recyclerView = getmRecyclerView();
+        recyclerView.setPadding(0, 0, 0, 0);
+        recyclerView.setClipToPadding(true);
     }
 
     @Override
