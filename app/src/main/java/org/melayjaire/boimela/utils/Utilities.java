@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -187,7 +186,8 @@ public class Utilities {
 
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(2, mBuilder.build());
+        int id = context.getResources().getInteger(R.integer.nearby_books_notification_id);
+        mNotificationManager.notify(id, mBuilder.build());
     }
 
     public static String translateCount(long count) {

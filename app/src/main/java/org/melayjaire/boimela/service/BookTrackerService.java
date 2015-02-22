@@ -42,15 +42,14 @@ public class BookTrackerService extends Service {
         }
     };
 
-    public static final long FILTER_DISTANCE = 10;
-
     private synchronized void update(Location userLocation) {
         boolean updateAvailable = false;
+        boolean vibrate = false;
         for (Publisher publisher : publishersInFavoriteBooks) {
             if (isPublisherStallNearby(userLocation, publisher.getStallLatitude(), publisher.getStallLongitude())) {
                 if (!nearbyPublishers.contains(publisher)) {
                     nearbyPublishers.add(publisher);
-                    updateAvailable = true;
+                    updateAvailable = vibrate = true;
                 }
             } else {
                 if (nearbyPublishers.contains(publisher)) {
@@ -64,12 +63,14 @@ public class BookTrackerService extends Service {
             for (Publisher publisher : nearbyPublishers) {
                 booksForNotification.addAll(publisherBooksMap.get(publisher));
             }
-            notifyUser(booksForNotification);
+            notifyUser(booksForNotification, vibrate);
         }
     }
 
-    private void notifyUser(Set<Book> booksForNotification) {
-        Utilities.vibrateDevice(this);
+    private void notifyUser(Set<Book> booksForNotification, boolean vibrate) {
+        if (vibrate) {
+            Utilities.vibrateDevice(this);
+        }
         Utilities.showNotificationForNearbyFavoriteBooks(this, booksForNotification);
     }
 
@@ -77,7 +78,7 @@ public class BookTrackerService extends Service {
         float distance[] = new float[1];
         Location.distanceBetween(userLocation.getLatitude(), userLocation.getLongitude()
                 , stallLatitude, stallLongitude, distance);
-        return (distance[0] < FILTER_DISTANCE);
+        return (distance[0] < Constants.FILTER_DISTANCE);
     }
 
     private void createPublisherToBooksMap() {
@@ -116,7 +117,7 @@ public class BookTrackerService extends Service {
         createPublisherToBooksMap();
         nearbyPublishers = new HashSet<>();
         userLocationListener = new UserLocationListener(this);
-        notifyUser(getDummyBooks());
+        notifyUser(getDummyBooks(), true);
     }
 
     @Override
@@ -166,7 +167,9 @@ public class BookTrackerService extends Service {
         private Location requestUpdateFromProvider(String provider) {
             Location location = null;
             if (locationManager.isProviderEnabled(provider)) {
-                locationManager.requestLocationUpdates(provider, 3000, 2, this);
+                locationManager.requestLocationUpdates(provider
+                        , Constants.LOCATION_UPDATE_INTERVAL
+                        , Constants.LOCATION_UPDATE_DISTANCE, this);
                 location = locationManager.getLastKnownLocation(provider);
             }
             return location;
