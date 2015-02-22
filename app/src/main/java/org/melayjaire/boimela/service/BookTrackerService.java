@@ -135,6 +135,7 @@ public class BookTrackerService extends Service {
     public void onDestroy() {
         userLocationListener.stop();
         dataSource.close();
+        Utilities.cancelNotificationForNearbyFavoriteBooks(this);
         super.onDestroy();
     }
 

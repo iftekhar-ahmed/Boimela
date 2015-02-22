@@ -162,6 +162,13 @@ public class Utilities {
         return false;
     }
 
+    public static void cancelNotificationForNearbyFavoriteBooks(Context context) {
+        int notification_id = context.getResources().getInteger(R.integer.nearby_books_notification_id);
+        NotificationManager mNotificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(notification_id);
+    }
+
     public static void showNotificationForNearbyFavoriteBooks(Context context, Set<Book> books) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 context).setSmallIcon(R.drawable.ic_star_full).setContentTitle(
@@ -186,8 +193,8 @@ public class Utilities {
 
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        int id = context.getResources().getInteger(R.integer.nearby_books_notification_id);
-        mNotificationManager.notify(id, mBuilder.build());
+        int notification_id = context.getResources().getInteger(R.integer.nearby_books_notification_id);
+        mNotificationManager.notify(notification_id, mBuilder.build());
     }
 
     public static String translateCount(long count) {
