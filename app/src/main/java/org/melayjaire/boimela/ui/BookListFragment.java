@@ -36,6 +36,7 @@ public class BookListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<List<Book>>, OnBookSearchListener
         , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
 
+    boolean isNoCriteriaSpecified;
     private View bookListLoadProgressView;
     private RecyclerView mRecyclerView;
     private BookDataSource dataSource;
@@ -130,7 +131,7 @@ public class BookListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        if (books.size() == 1) {
+        if (books.size() == 1 && isNoCriteriaSpecified) {
             Message message = new Message();
             message.obj = books.get(0);
             Handler handler = new Handler() {
@@ -176,6 +177,7 @@ public class BookListFragment extends Fragment implements
 
     @Override
     public void searchForBooks(SearchCriteria searchCriteria, SearchFilter searchFilter) {
+        isNoCriteriaSpecified = searchCriteria == null;
         Bundle args = new Bundle();
         args.putSerializable(ARG_SEARCH_CATEGORY, searchCriteria);
         args.putSerializable(ARG_SEARCH_FILTER, searchFilter);

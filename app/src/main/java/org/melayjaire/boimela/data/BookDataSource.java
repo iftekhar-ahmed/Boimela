@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
@@ -15,6 +16,10 @@ import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.utils.Constants;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +33,7 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.IS_NEW;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PRICE;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER_ENGLISH;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.RANK;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.STALL_LAT;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.STALL_LONG;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TABLE_BOOK;
@@ -47,7 +53,7 @@ public class BookDataSource {
 
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
-            DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW};
+            DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW, RANK};
     private final String[] allColumnsPublisher = {PUBLISHER, PUBLISHER_ENGLISH,
             STALL_LAT, STALL_LONG};
 
@@ -83,6 +89,10 @@ public class BookDataSource {
         database = dbHelper.getWritableDatabase();
     }
 
+    public boolean isOpen() {
+        return database.isOpen();
+    }
+
     public boolean isEmpty() {
         long dataCount = count();
         return dataCount <= 0;
@@ -107,12 +117,16 @@ public class BookDataSource {
         return dataCount;
     }
 
-    public long count(SearchFilter searchFilter) {
+    public long count(SearchFilter searchFilter, boolean distinct) {
         if (searchFilter == null) {
             return count();
         }
-        SQLiteStatement s = database.compileStatement("SELECT count(DISTINCT " + searchFilter.getSecondarySearchColumn() + ") FROM "
-                + TABLE_BOOK);
+        SQLiteStatement s = database.compileStatement("SELECT count(" + (distinct ? "DISTINCT " : "")
+                + searchFilter.getSecondarySearchColumn() + ") FROM "
+                + TABLE_BOOK + " WHERE " + searchFilter.getPrimarySearchColumn()
+                + (searchFilter.isFullyQualified()
+                        ? ("='" + searchFilter.getQueryText() + "'")
+                        : (" LIKE '%" + searchFilter.getQueryText() + "%'")));
         long dataCount = s.simpleQueryForLong();
         s.close();
         return dataCount;
@@ -140,6 +154,22 @@ public class BookDataSource {
         for (Book book : books) {
             insert(book);
         }
+    }
+
+    public void insertBulk(int resourceId) {
+        InputStream mInsertStream;
+        BufferedReader mInsertReader;
+        try {
+            mInsertStream = context.getResources().openRawResource(resourceId);
+            mInsertReader = new BufferedReader(new InputStreamReader(mInsertStream));
+            while (mInsertReader.ready()) {
+                String insertStmt = mInsertReader.readLine();
+                database.execSQL(insertStmt);
+            }
+        } catch (SQLiteConstraintException | IOException e) {
+            e.printStackTrace();
+        }
+        sendDataChangedBroadcast(Constants.ACTION_INSERT_BOOK);
     }
 
     public Cursor getInCursorByPriceRange(String[] range) {

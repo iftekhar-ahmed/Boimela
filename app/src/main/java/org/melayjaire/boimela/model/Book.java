@@ -15,6 +15,7 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.IS_NEW;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PRICE;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER_ENGLISH;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.RANK;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.STALL_LAT;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.STALL_LONG;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE;
@@ -36,6 +37,7 @@ public class Book implements Parcelable {
     private double stallLatitude;
     private double stallLongitude;
     private boolean isFavorite;
+    private int rank;
 
     public Book(Parcel in) {
         id = in.readLong();
@@ -52,9 +54,11 @@ public class Book implements Parcelable {
         stallLatitude = in.readDouble();
         stallLongitude = in.readDouble();
         isFavorite = in.readByte() != 0;
+        rank = in.readInt();
     }
 
-    public Book() {}
+    public Book() {
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -172,6 +176,14 @@ public class Book implements Parcelable {
         this.isNew = isNew;
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
     public ContentValues populate() {
         ContentValues values = new ContentValues();
         values.put(TITLE, getTitle().trim());
@@ -187,6 +199,7 @@ public class Book implements Parcelable {
         values.put(STALL_LONG, getStallLongitude());
         values.put(FAVORITE, isFavorite() ? "1" : "0");
         values.put(IS_NEW, isNew() ? "1" : "0");
+        values.put(RANK, getRank());
         return values;
     }
 
@@ -208,6 +221,7 @@ public class Book implements Parcelable {
         setStallLongitude(cursor.getDouble(cursor.getColumnIndex(STALL_LONG)));
         setFavorite(cursor.getInt(cursor.getColumnIndex(FAVORITE)) == 1);
         setNew(cursor.getInt(cursor.getColumnIndex(IS_NEW)) == 1);
+        setRank(cursor.getInt(cursor.getColumnIndex(RANK)));
         return this;
     }
 
@@ -232,6 +246,7 @@ public class Book implements Parcelable {
         out.writeDouble(stallLatitude);
         out.writeDouble(stallLongitude);
         out.writeByte((byte) (isFavorite ? 1 : 0));
+        out.writeInt(rank);
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {

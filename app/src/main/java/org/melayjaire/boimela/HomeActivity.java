@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -278,6 +279,7 @@ public class HomeActivity extends ActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GPS_REQUEST_CODE) {
+            Log.i("gps?", "" + Utilities.isGpsEnabled(this));
             if (Utilities.isGpsEnabled(getBaseContext())) {
                 startService(new Intent(this, BookTrackerService.class));
                 switchFab(true);
@@ -354,17 +356,20 @@ public class HomeActivity extends ActionBarActivity implements
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
                 searchCriteria = null;
+                onBookSearchListener.searchForBooks(null, null);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
                 break;
-            case R.id.drawer_item_new_books:
-                searchCriteria = SearchCriteria.NewBooks;
-                toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.new_book), this));
+            case R.id.drawer_item_ranked_books:
+                searchCriteria = null;
+                searchFilter = SearchFilter.Rank.withQuery("1", true, true);
+                onBookSearchListener.searchForBooks(null, searchFilter);
+                toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.ranked_book), this));
                 break;
             case R.id.drawer_item_favorite_books:
                 searchCriteria = SearchCriteria.Favorites;
+                onBookSearchListener.searchForBooks(searchCriteria, null);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
                 break;
         }
-        onBookSearchListener.searchForBooks(searchCriteria, null);
     }
 }

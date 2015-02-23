@@ -117,7 +117,7 @@ public class BookTrackerService extends Service {
         createPublisherToBooksMap();
         nearbyPublishers = new HashSet<>();
         userLocationListener = new UserLocationListener(this);
-        notifyUser(getDummyBooks(), true);
+        // notifyUser(getDummyBooks(), true);
     }
 
     @Override

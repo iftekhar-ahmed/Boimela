@@ -24,6 +24,7 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
     public static final String STALL_LONG = "stall_longiitude";
     public static final String FAVORITE = "favorite";
     public static final String IS_NEW = "is_new";
+    public static final String RANK = "rank";
 
     protected BookDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -41,8 +42,8 @@ public class BookDatabaseHelper extends SQLiteOpenHelper {
                 + AUTHOR_ENGLISH + " TEXT, " + CATEGORY + " TEXT, " + PUBLISHER
                 + " TEXT, " + PUBLISHER_ENGLISH + " TEXT, " + PRICE + " TEXT, "
                 + DESCRIPTION + " TEXT, " + STALL_LAT + " REAL, " + STALL_LONG
-                + " REAL, " + FAVORITE + " INTEGER, " + IS_NEW + " INTEGER "
-                + ");");
+                + " REAL, " + FAVORITE + " INTEGER, " + IS_NEW + " INTEGER, "
+                + RANK + " INTEGER" + ");");
     }
 
     @Override

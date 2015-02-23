@@ -6,6 +6,7 @@ import static org.melayjaire.boimela.data.BookDatabaseHelper.CATEGORY;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.ID;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.PUBLISHER_ENGLISH;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.RANK;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE_ENGLISH;
 
@@ -20,7 +21,9 @@ public enum SearchFilter {
 
     Publisher(PUBLISHER_ENGLISH, PUBLISHER, new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER}),
 
-    BookCategory(CATEGORY, CATEGORY, new String[]{ID, CATEGORY});
+    BookCategory(CATEGORY, TITLE, new String[]{ID, CATEGORY, TITLE}),
+
+    Rank(RANK, TITLE, new String[]{ID, RANK, TITLE});
 
     SearchFilter(String primarySearchColumn, String secondarySearchColumn, String[] searchSuggestionColumns) {
         this.primarySearchColumn = primarySearchColumn;

@@ -2,13 +2,12 @@ package org.melayjaire.boimela.loader;
 
 import android.content.Context;
 
+import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
-import org.melayjaire.boimela.data.BookShelf;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 
-import java.io.IOException;
 import java.util.List;
 
 public class BookListLoader extends SimpleListLoader {
@@ -31,18 +30,8 @@ public class BookListLoader extends SimpleListLoader {
     @Override
     public List<Book> loadInBackground() {
         if (dataSource.isEmpty()) {
-            dataSource.insert(loadBookShelf().getBooks());
+            dataSource.insertBulk(R.raw.books);
         }
         return dataSource.getAllBooks(searchCriteria, searchFilter);
-    }
-
-    private BookShelf loadBookShelf() {
-        BookShelf bookShelf = BookShelf.getInstance();
-        try {
-            bookShelf.loadBooks(context.getResources());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bookShelf;
     }
 }

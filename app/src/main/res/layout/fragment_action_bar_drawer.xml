@@ -30,22 +30,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/drawer_item_new_books"
+        android:id="@+id/drawer_item_ranked_books"
         style="@style/DrawerItem">
 
         <ImageView
             style="@style/DrawerItem_Icon"
-            android:src="@drawable/ic_new_book"
+            android:src="@drawable/ic_ranked_book"
             android:scaleType="fitXY"
             android:contentDescription="@string/book_cover" />
 
         <org.melayjaire.boimela.view.BanglaTextView
             style="@style/DrawerItem_Text"
             app:font="@string/font_solaimanlipi"
-            app:banglaText="@string/new_book" />
+            app:banglaText="@string/ranked_book" />
 
         <org.melayjaire.boimela.view.BanglaTextView
-            android:id="@+id/textView_counter_new_books"
+            android:id="@+id/textView_counter_ranked_books"
             style="@style/DrawerItem_Counter"
             app:font="@string/font_solaimanlipi" />
     </LinearLayout>

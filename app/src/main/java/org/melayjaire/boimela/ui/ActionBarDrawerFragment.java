@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.search.SearchCriteria;
+import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
@@ -26,13 +27,14 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     private View selectedItem;
     private BanglaTextView allBooksCounter;
     private BanglaTextView favBooksCounter;
-    private BanglaTextView newBooksCounter;
+    private BanglaTextView rankedBooksCounter;
     private OnClickListener onClickListener;
     private BookDataSource bookDataSource;
     private BroadcastReceiver bookUpdateBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.ACTION_UPDATE_BOOK)) {
+            String action = intent.getAction();
+            if (action.equals(Constants.ACTION_INSERT_BOOK) | action.equals(Constants.ACTION_UPDATE_BOOK)) {
                 updateAllCounters();
             }
         }
@@ -52,9 +54,12 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     }
 
     private void updateAllCounters() {
+        if (!bookDataSource.isOpen()) {
+            bookDataSource.open();
+        }
         allBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count()));
         favBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Favorites)));
-        newBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.NewBooks)));
+        rankedBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchFilter.Rank.withQuery("1", true, false), false)));
     }
 
     @Override
@@ -62,8 +67,10 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         super.onAttach(activity);
         bookDataSource = new BookDataSource(activity);
         bookDataSource.open();
-        LocalBroadcastManager.getInstance(activity).registerReceiver(bookUpdateBroadcastReceiver
-                , new IntentFilter(Constants.ACTION_UPDATE_BOOK));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.ACTION_INSERT_BOOK);
+        intentFilter.addAction(Constants.ACTION_UPDATE_BOOK);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(bookUpdateBroadcastReceiver, intentFilter);
         try {
             onClickListener = (OnClickListener) getActivity();
         } catch (ClassCastException e) {
@@ -99,22 +106,22 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
 
         View allBooks = rootView.findViewById(R.id.drawer_item_all_books);
         allBooks.setOnClickListener(this);
-        View newBooks = rootView.findViewById(R.id.drawer_item_new_books);
-        newBooks.setOnClickListener(this);
+        View rankedBooks = rootView.findViewById(R.id.drawer_item_ranked_books);
+        rankedBooks.setOnClickListener(this);
         View favoriteBooks = rootView.findViewById(R.id.drawer_item_favorite_books);
         favoriteBooks.setOnClickListener(this);
 
         allBooksCounter = (BanglaTextView) allBooks.findViewById(R.id.textView_counter_all_books);
         favBooksCounter = (BanglaTextView) favoriteBooks.findViewById(R.id.textView_counter_favorite_books);
-        newBooksCounter = (BanglaTextView) newBooks.findViewById(R.id.textView_counter_new_books);
+        rankedBooksCounter = (BanglaTextView) rankedBooks.findViewById(R.id.textView_counter_ranked_books);
         updateAllCounters();
 
         switch (selectedItemId) {
             case R.id.drawer_item_all_books:
                 selectedItem = allBooks;
                 break;
-            case R.id.drawer_item_new_books:
-                selectedItem = newBooks;
+            case R.id.drawer_item_ranked_books:
+                selectedItem = rankedBooks;
                 break;
             case R.id.drawer_item_favorite_books:
                 selectedItem = favoriteBooks;
