@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.search.SearchCriteria;
-import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
@@ -59,7 +58,7 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         }
         allBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count()));
         favBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Favorites)));
-        rankedBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchFilter.Rank.withQuery("1", true, false), false)));
+        rankedBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Rank)));
     }
 
     @Override

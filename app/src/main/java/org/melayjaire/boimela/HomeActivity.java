@@ -356,20 +356,18 @@ public class HomeActivity extends ActionBarActivity implements
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
                 searchCriteria = null;
-                onBookSearchListener.searchForBooks(null, null);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
                 break;
             case R.id.drawer_item_ranked_books:
-                searchCriteria = null;
-                searchFilter = SearchFilter.Rank.withQuery("1", true, true);
+                searchCriteria = SearchCriteria.Rank;
                 onBookSearchListener.searchForBooks(null, searchFilter);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.ranked_book), this));
                 break;
             case R.id.drawer_item_favorite_books:
                 searchCriteria = SearchCriteria.Favorites;
-                onBookSearchListener.searchForBooks(searchCriteria, null);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
                 break;
         }
+        onBookSearchListener.searchForBooks(searchCriteria, null);
     }
 }

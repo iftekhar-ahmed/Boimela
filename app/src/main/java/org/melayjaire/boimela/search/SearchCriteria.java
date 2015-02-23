@@ -1,7 +1,10 @@
 package org.melayjaire.boimela.search;
 
 import static org.melayjaire.boimela.data.BookDatabaseHelper.FAVORITE;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.ID;
 import static org.melayjaire.boimela.data.BookDatabaseHelper.IS_NEW;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.RANK;
+import static org.melayjaire.boimela.data.BookDatabaseHelper.TITLE;
 
 /**
  * Created by Iftekhar on 2/19/2015.
@@ -10,7 +13,9 @@ public enum SearchCriteria {
 
     NewBooks(IS_NEW, "1"),
 
-    Favorites(FAVORITE, "1");
+    Favorites(FAVORITE, "1"),
+
+    Rank(RANK, "1");
 
     public String getDefaultSearchArgument() {
         return defaultSearchArgument;

@@ -21,9 +21,7 @@ public enum SearchFilter {
 
     Publisher(PUBLISHER_ENGLISH, PUBLISHER, new String[]{ID, PUBLISHER_ENGLISH, PUBLISHER}),
 
-    BookCategory(CATEGORY, TITLE, new String[]{ID, CATEGORY, TITLE}),
-
-    Rank(RANK, TITLE, new String[]{ID, RANK, TITLE});
+    BookCategory(CATEGORY, TITLE, new String[]{ID, CATEGORY, TITLE});
 
     SearchFilter(String primarySearchColumn, String secondarySearchColumn, String[] searchSuggestionColumns) {
         this.primarySearchColumn = primarySearchColumn;
