@@ -102,7 +102,7 @@ public class BookTrackerService extends Service {
 
     private Set<Book> getDummyBooks() {
         Set<Book> dummyBooks = new HashSet<>();
-        dummyBooks.addAll(dataSource.getAllBooks(SearchCriteria.Favorites, SearchFilter.Title.withQuery("himu", false, true)));
+        dummyBooks.addAll(dataSource.getAllBooks(SearchCriteria.Favorites, SearchFilter.Title.withQuery("", false, true)));
         return dummyBooks;
     }
 

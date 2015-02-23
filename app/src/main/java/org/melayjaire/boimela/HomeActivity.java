@@ -16,7 +16,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -279,7 +278,6 @@ public class HomeActivity extends ActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GPS_REQUEST_CODE) {
-            Log.i("gps?", "" + Utilities.isGpsEnabled(this));
             if (Utilities.isGpsEnabled(getBaseContext())) {
                 startService(new Intent(this, BookTrackerService.class));
                 switchFab(true);
