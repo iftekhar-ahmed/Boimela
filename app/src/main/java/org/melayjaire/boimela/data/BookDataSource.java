@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.melayjaire.boimela.model.Author;
 import org.melayjaire.boimela.model.Book;
 import org.melayjaire.boimela.model.Publisher;
 import org.melayjaire.boimela.search.SearchCriteria;
@@ -54,6 +55,7 @@ public class BookDataSource {
     private final String[] allColumnsBook = {ID, TITLE, TITLE_ENGLISH, AUTHOR,
             AUTHOR_ENGLISH, CATEGORY, PUBLISHER, PUBLISHER_ENGLISH, PRICE,
             DESCRIPTION, STALL_LAT, STALL_LONG, FAVORITE, IS_NEW, RANK};
+    private final String[] allColumnsAuthor = {ID, AUTHOR, AUTHOR_ENGLISH};
     private final String[] allColumnsPublisher = {PUBLISHER, PUBLISHER_ENGLISH,
             STALL_LAT, STALL_LONG};
 
@@ -83,6 +85,15 @@ public class BookDataSource {
         }
         dbResultCursor.close();
         return books;
+    }
+
+    public List<Author> cursorToAuthorList(Cursor dbResultCursor) {
+        List<Author> authors = new ArrayList<>();
+        while (dbResultCursor.moveToNext()) {
+            authors.add(new Author().fromCursor(dbResultCursor));
+        }
+        dbResultCursor.close();
+        return authors;
     }
 
     public void open() throws SQLiteException {
@@ -125,8 +136,8 @@ public class BookDataSource {
                 + searchFilter.getSecondarySearchColumn() + ") FROM "
                 + TABLE_BOOK + " WHERE " + searchFilter.getPrimarySearchColumn()
                 + (searchFilter.isFullyQualified()
-                        ? ("='" + searchFilter.getQueryText() + "'")
-                        : (" LIKE '%" + searchFilter.getQueryText() + "%'")));
+                ? ("='" + searchFilter.getQueryText() + "'")
+                : (" LIKE '%" + searchFilter.getQueryText() + "%'")));
         long dataCount = s.simpleQueryForLong();
         s.close();
         return dataCount;
@@ -265,5 +276,10 @@ public class BookDataSource {
                 + "=?", new String[]{searchCriteria.getDefaultSearchArgument()}, null, null
                 , PUBLISHER, null);
         return cursorToPublisherList(result);
+    }
+
+    public List<Author> getAllAuthors() {
+        Cursor result = database.query(true, TABLE_BOOK, allColumnsAuthor, null, null, null, null, AUTHOR, null);
+        return cursorToAuthorList(result);
     }
 }

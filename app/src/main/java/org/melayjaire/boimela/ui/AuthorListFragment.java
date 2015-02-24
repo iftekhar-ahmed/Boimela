@@ -16,59 +16,47 @@ import android.view.ViewGroup;
 
 import org.melayjaire.boimela.OnBookSearchListener;
 import org.melayjaire.boimela.R;
-import org.melayjaire.boimela.adapter.BookListAdapter;
+import org.melayjaire.boimela.adapter.AuthorListAdapter;
 import org.melayjaire.boimela.data.BookDataSource;
-import org.melayjaire.boimela.loader.BookListLoader;
-import org.melayjaire.boimela.model.Book;
+import org.melayjaire.boimela.loader.AuthorListLoader;
+import org.melayjaire.boimela.model.Author;
 import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
-import org.melayjaire.boimela.search.SearchSuggestionHelper;
 import org.melayjaire.boimela.utils.Utilities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookListFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<List<Book>>, OnBookSearchListener
-        , BookListAdapter.FavoriteCheckedListener, BookListAdapter.OnItemClickListener {
+/**
+ * Created by Iftekhar on 2/24/2015.
+ */
+public class AuthorListFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<List<Author>>, OnBookSearchListener, AuthorListAdapter.OnItemClickListener {
 
-    private View bookListLoadProgressView;
+    private View authorListLoadProgressView;
     private RecyclerView mRecyclerView;
     private BookDataSource dataSource;
-    private BookListAdapter bookListAdapter;
+    private AuthorListAdapter authorListAdapter;
 
-    public static BookListFragment newInstance(SearchCriteria searchCriteria, SearchFilter searchFilter) {
-        BookListFragment fragment = new BookListFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_SEARCH_CATEGORY, searchCriteria);
-        args.putSerializable(ARG_SEARCH_FILTER, searchFilter);
-        fragment.setArguments(args);
-        return fragment;
+    public AuthorListFragment() {
     }
 
-    public BookListFragment() {
-    }
-
-    protected BookListAdapter getBookListAdapter() {
-        return bookListAdapter;
-    }
-
-    protected RecyclerView getmRecyclerView() {
-        return mRecyclerView;
+    public static AuthorListFragment newInstance() {
+        return new AuthorListFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bookListAdapter = new BookListAdapter(getActivity(), new ArrayList<Book>(), this, this);
+        authorListAdapter = new AuthorListAdapter(getActivity(), new ArrayList<Author>(), this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_books, container, false);
-        bookListLoadProgressView = view.findViewById(R.id.load_status);
+        authorListLoadProgressView = view.findViewById(R.id.load_status);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_books);
         return view;
     }
@@ -80,14 +68,13 @@ public class BookListFragment extends Fragment implements
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(bookListAdapter);
+        mRecyclerView.setAdapter(authorListAdapter);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle args = getArguments();
-        getActivity().getSupportLoaderManager().initLoader(0, args, this);
+        getActivity().getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -104,9 +91,9 @@ public class BookListFragment extends Fragment implements
     }
 
     @Override
-    public Loader<List<Book>> onCreateLoader(int id, Bundle data) {
+    public Loader<List<Author>> onCreateLoader(int id, Bundle data) {
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
-                bookListLoadProgressView, true);
+                authorListLoadProgressView, true);
         SearchCriteria searchCriteria = null;
         SearchFilter searchFilter = null;
         if (data != null && data.containsKey(ARG_SEARCH_CATEGORY) && data.containsKey(ARG_SEARCH_FILTER)) {
@@ -119,47 +106,33 @@ public class BookListFragment extends Fragment implements
                 searchFilter = (SearchFilter) filter;
             }
         }
-        return new BookListLoader(getActivity(), dataSource, searchCriteria, searchFilter);
+        return new AuthorListLoader(getActivity(), dataSource, searchCriteria, searchFilter);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        bookListAdapter.swapList(books);
+    public void onLoadFinished(Loader<List<Author>> listLoader, List<Author> authors) {
+        authorListAdapter.swapList(authors);
         Utilities.showListLoadProgress(getActivity(), mRecyclerView,
-                bookListLoadProgressView, false);
+                authorListLoadProgressView, false);
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Book>> loader) {
-        bookListAdapter.swapList(null);
-    }
-
-    @Override
-    public void onFavoriteCheckedChange(Book book, boolean isFavorite) {
-        if (book.isFavorite() == isFavorite) {
-            return;
-        }
-        book.setFavorite(isFavorite);
-        dataSource.update(book);
-    }
-
-    @Override
-    public void onItemClick(Book book) {
-        BookDetailFragment bookDetailFragment = BookDetailFragment.newInstance(book);
-        bookDetailFragment.show(getFragmentManager(), "Detail");
+    public void onLoaderReset(Loader<List<Author>> listLoader) {
+        authorListAdapter.swapList(null);
     }
 
     @Override
     public void searchForBooks(SearchCriteria searchCriteria, SearchFilter searchFilter) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_SEARCH_CATEGORY, searchCriteria);
-        args.putSerializable(ARG_SEARCH_FILTER, searchFilter);
-        getActivity().getSupportLoaderManager().restartLoader(0, args, this);
+
     }
 
     @Override
     public Cursor getSearchSuggestions(SearchCriteria searchCriteria, SearchFilter searchFilter) {
-        SearchSuggestionHelper searchSuggestionHelper = SearchSuggestionHelper.getInstance();
-        return searchSuggestionHelper.getSuggestions(dataSource.getPlainSuggestions(searchCriteria, searchFilter), searchFilter);
+        return null;
+    }
+
+    @Override
+    public void onItemClick(Author author) {
+
     }
 }

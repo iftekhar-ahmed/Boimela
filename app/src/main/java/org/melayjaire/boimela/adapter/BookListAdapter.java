@@ -65,7 +65,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Book book = books.get(position);
         viewHolder.itemView.setTag(position);
-        viewHolder.imageViewBookCover.setImageDrawable(TextDrawable
+        viewHolder.bookCover.setImageDrawable(TextDrawable
                 .builder()
                 .beginConfig()
                 .withBorder(4).fontSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 26
@@ -93,7 +93,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageViewBookCover;
+        public ImageView bookCover;
         public BanglaTextView title;
         public BanglaTextView author;
         public BanglaTextView publisher;
@@ -102,7 +102,7 @@ public class BookListAdapter extends RecyclerView.Adapter<BookListAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageViewBookCover = (ImageView) itemView.findViewById(R.id.imageView_book_cover);
+            bookCover = (ImageView) itemView.findViewById(R.id.imageView_book_cover);
             title = (BanglaTextView) itemView.findViewById(R.id.title);
             author = (BanglaTextView) itemView.findViewById(R.id.author);
             publisher = (BanglaTextView) itemView.findViewById(R.id.publisher);

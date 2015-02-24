@@ -70,4 +70,25 @@
             style="@style/DrawerItem_Counter"
             app:font="@string/font_solaimanlipi" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawer_item_authors"
+        style="@style/DrawerItem">
+
+        <ImageView
+            style="@style/DrawerItem_Icon"
+            android:src="@drawable/ic_author"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/book_cover" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            style="@style/DrawerItem_Text"
+            app:font="@string/font_solaimanlipi"
+            app:banglaText="@string/favorite_books" />
+
+        <org.melayjaire.boimela.view.BanglaTextView
+            android:id="@+id/textView_counter_authors"
+            style="@style/DrawerItem_Counter"
+            app:font="@string/font_solaimanlipi" />
+    </LinearLayout>
 </LinearLayout>
