@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import org.melayjaire.boimela.R;
 import org.melayjaire.boimela.data.BookDataSource;
 import org.melayjaire.boimela.search.SearchCriteria;
+import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.Utilities;
 import org.melayjaire.boimela.view.BanglaTextView;
@@ -27,6 +28,7 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
     private BanglaTextView allBooksCounter;
     private BanglaTextView favBooksCounter;
     private BanglaTextView rankedBooksCounter;
+    private BanglaTextView authorCounter;
     private OnClickListener onClickListener;
     private BookDataSource bookDataSource;
     private BroadcastReceiver bookUpdateBroadcastReceiver = new BroadcastReceiver() {
@@ -59,6 +61,7 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         allBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count()));
         favBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Favorites)));
         rankedBooksCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchCriteria.Rank)));
+        authorCounter.setBanglaText(Utilities.translateCount(bookDataSource.count(SearchFilter.Author, true)));
     }
 
     @Override
@@ -109,10 +112,13 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
         rankedBooks.setOnClickListener(this);
         View favoriteBooks = rootView.findViewById(R.id.drawer_item_favorite_books);
         favoriteBooks.setOnClickListener(this);
+        View authors = rootView.findViewById(R.id.drawer_item_authors);
+        authors.setOnClickListener(this);
 
         allBooksCounter = (BanglaTextView) allBooks.findViewById(R.id.textView_counter_all_books);
         favBooksCounter = (BanglaTextView) favoriteBooks.findViewById(R.id.textView_counter_favorite_books);
         rankedBooksCounter = (BanglaTextView) rankedBooks.findViewById(R.id.textView_counter_ranked_books);
+        authorCounter = (BanglaTextView) authors.findViewById(R.id.textView_counter_authors);
         updateAllCounters();
 
         switch (selectedItemId) {
@@ -124,6 +130,9 @@ public class ActionBarDrawerFragment extends Fragment implements View.OnClickLis
                 break;
             case R.id.drawer_item_favorite_books:
                 selectedItem = favoriteBooks;
+                break;
+            case R.id.drawer_item_authors:
+                selectedItem = authors;
                 break;
             default:
                 selectedItem = allBooks;

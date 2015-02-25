@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -35,6 +36,7 @@ import org.melayjaire.boimela.search.SearchCriteria;
 import org.melayjaire.boimela.search.SearchFilter;
 import org.melayjaire.boimela.service.BookTrackerService;
 import org.melayjaire.boimela.ui.ActionBarDrawerFragment;
+import org.melayjaire.boimela.ui.AuthorListFragment;
 import org.melayjaire.boimela.ui.BookListFragment;
 import org.melayjaire.boimela.utils.Constants;
 import org.melayjaire.boimela.utils.JsonTaskCompleteListener;
@@ -78,6 +80,17 @@ public class HomeActivity extends ActionBarActivity implements
             fab.setColorPressedResId(R.color.holo_blue_light);
             fab.setIcon(R.drawable.ic_gps_not_fixed);
         }
+    }
+
+    private void replaceFragment(Fragment newFragment) {
+        if (newFragment == null) {
+            return;
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, newFragment);
+        fragmentTransaction.commit();
+        onBookSearchListener = (OnBookSearchListener) newFragment;
     }
 
     @Override
@@ -351,20 +364,28 @@ public class HomeActivity extends ActionBarActivity implements
     @Override
     public void onItemClick(View view) {
         drawerLayout.closeDrawers();
+        Fragment newFragment = null;
         switch (view.getId()) {
             case R.id.drawer_item_all_books:
                 searchCriteria = null;
+                searchFilter = SearchFilter.Title.withQuery("", false, false);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.all_books), this));
+                newFragment = BookListFragment.newInstance(searchCriteria, searchFilter);
                 break;
             case R.id.drawer_item_ranked_books:
                 searchCriteria = SearchCriteria.Rank;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.ranked_book), this));
+                newFragment = BookListFragment.newInstance(searchCriteria, null);
                 break;
             case R.id.drawer_item_favorite_books:
                 searchCriteria = SearchCriteria.Favorites;
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.favorite_books), this));
+                newFragment = BookListFragment.newInstance(searchCriteria, null);
+                break;
+            case R.id.drawer_item_authors:
+                newFragment = AuthorListFragment.newInstance();
                 break;
         }
-        onBookSearchListener.searchForBooks(searchCriteria, null);
+        replaceFragment(newFragment);
     }
 }

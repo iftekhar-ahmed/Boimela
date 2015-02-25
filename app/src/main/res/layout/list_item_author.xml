@@ -27,7 +27,6 @@
         android:layout_toStartOf="@+id/textView_book_count"
         android:layout_toLeftOf="@+id/textView_book_count"
         android:layout_centerVertical="true"
-        android:maxLines="1"
         app:font="@string/font_solaimanlipi"
         app:banglaText="@string/author"
         android:textColor="?android:attr/textColorSecondary"
