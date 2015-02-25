@@ -358,7 +358,6 @@ public class HomeActivity extends ActionBarActivity implements
                 break;
             case R.id.drawer_item_ranked_books:
                 searchCriteria = SearchCriteria.Rank;
-                onBookSearchListener.searchForBooks(null, searchFilter);
                 toolbar.setTitle(Utilities.getBanglaSpannableString(getString(R.string.ranked_book), this));
                 break;
             case R.id.drawer_item_favorite_books:

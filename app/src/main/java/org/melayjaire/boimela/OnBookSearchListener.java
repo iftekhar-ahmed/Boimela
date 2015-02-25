@@ -9,6 +9,10 @@ import org.melayjaire.boimela.search.SearchFilter;
  * Created by Iftekhar on 09/01/2015.
  */
 public interface OnBookSearchListener {
+
+    public static final String ARG_SEARCH_CATEGORY = "_arg_search_category";
+    public static final String ARG_SEARCH_FILTER = "_arg_search_filter";
+
     /**
      * Query for books based on book title, author or publisher as search type
      *
